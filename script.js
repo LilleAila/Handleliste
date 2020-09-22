@@ -163,7 +163,7 @@ function refresh() {
                     });
                     $(`#${i} .btn`).click(function() {
                                 firebase.database().ref(`/handleliste/${$(`#${i} .btn`).attr('navn')}/`).set(null);
-                        refresh();
+                                refresh();
             });
         }
         console.log(`Det er ${trcount} ting med klassen tr.`);
