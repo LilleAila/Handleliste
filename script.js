@@ -61,7 +61,7 @@ function skriv(input) {
     console.log('Trykket');
     alert('Trykket');
     $('#checkbox').prop('checked', false);
-    location.reload();
+    refresh();
 }
 
 function les(input) {
@@ -101,7 +101,7 @@ $('#delete').click(function() {
                 firebase.database().ref(`/handleliste/${$(this).attr('del')}/`).set(null);
             });
             alert('Slettet');
-            location.reload();
+            refresh();
         } else {
             alert('Sletter Ikke');
         }
