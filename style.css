@@ -1,0 +1,312 @@
+* {
+    box-sizing: border-box;
+}
+
+#myInput {
+    /* background-image: url('/css/searchicon.png');
+    background-position: 10px 10px;
+    background-repeat: no-repeat; */
+    width: 100%;
+    font-size: 16px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    margin-bottom: 12px;
+}
+
+#myTable {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #ddd;
+    font-size: 18px;
+}
+
+#myTable th,
+#myTable td {
+    text-align: left;
+    padding: 12px;
+}
+
+#myTable tr {
+    border-bottom: 1px solid #ddd;
+}
+
+#myTable tr.header {
+    background-color: #f1f1f1;
+}
+
+hr {
+    width: 100%;
+    height: 1px;
+    border: 1px solid black;
+    background-color: black;
+}
+
+#skriv label {
+    z-index: 100;
+    background-color: rgba(0, 0, 255, 0.5);
+    border-radius: 100%;
+    border: none;
+    outline: none;
+    width: 10vmin;
+    height: 10vmin;
+    margin: 0;
+    padding: 0;
+    font-size: 10vmin;
+    display: grid;
+    place-items: center;
+    justify-items: center;
+    place-content: center;
+    text-align: center;
+    position: fixed;
+    top: 0;
+    right: 0;
+    transform: rotate(45deg);
+    transition: background-color 0.5s ease, transform 0.5s ease;
+    cursor: pointer;
+    user-select: none;
+}
+
+
+/* #skriv label:hover {
+    background-color: rgba(153, 50, 204, 0.5);
+    transform: rotate(90deg);
+} */
+
+#ul {
+    /* display: none; */
+    z-index: 100;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    transition: background-color 0.5s ease-out;
+    position: fixed;
+    top: 2vmin;
+}
+
+@keyframes right {
+    from {
+        right: -300px;
+        opacity: 0;
+    }
+    to {
+        right: 11vmin;
+        opacity: 1;
+    }
+}
+
+@keyframes left {
+    from {
+        right: 11vmin;
+        opacity: 1;
+    }
+    to {
+        right: -300px;
+        opacity: 0;
+    }
+}
+
+#ul li {
+    height: 5vmin;
+    display: inline-block;
+    font-size: 5vmin;
+    /* top: 50%;
+    transform: translateY(-50%); */
+    background-color: rgba(0, 0, 255, 0.5);
+    margin: auto;
+    padding: 1vmin;
+    box-sizing: initial;
+    cursor: pointer;
+    user-select: none;
+}
+
+#checkbox {
+    opacity: 0;
+}
+
+#checkbox:checked+#label+#ul {
+    display: block;
+    animation: right 0.5s forwards;
+}
+
+#checkbox:not(:checked)+#label+#ul {
+    animation: left 0.5s forwards;
+    pointer-events: none;
+}
+
+#checkbox:checked+#label {
+    background-color: rgba(153, 50, 204, 0.5);
+    transform: rotate(90deg);
+}
+
+#ul li:hover {
+    background-color: rgba(153, 50, 204, 0.5);
+}
+
+th img {
+    width: auto;
+    height: 100%;
+    /* margin-left: auto; */
+}
+
+th#delete {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    height: 5vh;
+    min-height: 5vh;
+    cursor: pointer;
+    transition: filter 0.5s ease, background-color 0.5s ease;
+}
+
+th#delete:hover {
+    background-color: red;
+}
+
+th#delete img {
+    transition: filter 0.5s ease, background-color 0.5s ease;
+}
+
+th#delete:hover img {
+    filter: invert(100%)
+}
+
+th {
+    height: 5vh;
+    min-height: 5vh;
+    font-size: 25px;
+}
+
+.delete {
+    border-left: 1px solid black;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.check {
+    width: 100%;
+    height: auto;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+table {
+    max-width: 100vw;
+    box-sizing: border-box;
+}
+
+.swipe-out .delete-btn {
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: solid 1px rgb(96, 23, 18);
+    background-image: linear-gradient(top, rgb(242, 153, 157), rgb(213, 62, 41));
+    background-image: -webkit-linear-gradient(top, rgb(242, 153, 157), rgb(213, 62, 41));
+    background-image: -moz-linear-gradient(top, rgb(242, 153, 157), rgb(213, 62, 41));
+    background-image: -o-linear-gradient(top, rgb(242, 153, 157), rgb(213, 62, 41));
+    text-shadow: 0em -0.1em rgb(51, 51, 51);
+    color: #fff;
+    font: bold 14px/20px "Helvetica Neue", Arial, Helvetica, sans-serif;
+    height: 90%;
+    text-align: center;
+    display: grid;
+    place-items: center;
+}
+
+ul {
+    list-style-type: none;
+    margin: 5px;
+    position: relative;
+}
+
+ul li {
+    width: 100%;
+    height: 5vh;
+    border-radius: 6px;
+    background-color: gray;
+    margin: 5px;
+    padding: 5px;
+    color: white;
+}
+
+#liste {
+    width: 100%;
+    margin: 0;
+    padding: 8px;
+    padding-left: 0;
+    /* padding-right: 7.5px; */
+    background-color: transparent;
+    border-radius: 6px;
+    border: 1px solid black;
+}
+
+#liste li {
+    width: 100%;
+    color: white;
+}
+
+#liste li:hover {
+    background-color: black;
+    color: white;
+}
+
+.swiped {
+    animation: in 0.5s forwards ease-out;
+}
+
+@keyframes in {
+    from {
+        right: -300px;
+        opacity: 0;
+    }
+    to {
+        right: 0.5vw;
+        opacity: 1;
+    }
+}
+
+.clicked {
+    animation: out 0.5s forwards ease-out;
+    /* opacity: 0; */
+    /* right: -300px; */
+    pointer-events: none;
+}
+
+@keyframes out {
+    from {
+        right: 0.5vw;
+        opacity: 1;
+    }
+    to {
+        right: -300px;
+        opacity: 0;
+    }
+}
+
+.btn {
+    position: absolute;
+    /* background-color: red; */
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: solid 1px rgb(96, 23, 18);
+    background-image: linear-gradient(top, rgb(242, 153, 157), rgb(213, 62, 41));
+    background-image: -webkit-linear-gradient(top, rgb(242, 153, 157), rgb(213, 62, 41));
+    background-image: -moz-linear-gradient(top, rgb(242, 153, 157), rgb(213, 62, 41));
+    background-image: -o-linear-gradient(top, rgb(242, 153, 157), rgb(213, 62, 41));
+    text-shadow: 0em -0.1em rgb(51, 51, 51);
+    color: #fff;
+    font: bold 14px/20px "Helvetica Neue", Arial, Helvetica, sans-serif;
+    height: 4.5vh;
+    top: 0.25vh;
+    display: grid;
+    place-items: center;
+    border-radius: 6px;
+    user-select: none;
+    cursor: pointer;
+}
+
+.tr {
+    position: relative;
+}
