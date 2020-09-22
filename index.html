@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telle ned</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body id="Body">
+    <!--<button id="skriv">Skriv</button>
+    <button id="les">Les</button>
+    <hr/>-->
+    <!--<div id="skriv">&times;</div>-->
+    <div class="container" id="skriv">
+        <input id="checkbox" type="checkbox" />
+        <label for="checkbox" id="label">&times;</label>
+        <ul id="ul">
+            <li id="skrive">Legg til</li>
+        </ul>
+    </div>
+    <table id="myTable">
+        <tbody>
+            <tr class="header">
+                <th style="width:100%;">Handleliste</th>
+            </tr>
+            <tr>
+                <td>
+                    <ul id="liste"></ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-analytics.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-database.js"></script>
+
+    <script>
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        var firebaseConfig = {
+            apiKey: "AIzaSyAeL-C0wXKTOGMkq9betFDaaECv5PL0UCQ",
+            authDomain: "bussbilett-ce577.firebaseapp.com",
+            databaseURL: "https://bussbilett-ce577.firebaseio.com",
+            projectId: "bussbilett-ce577",
+            storageBucket: "bussbilett-ce577.appspot.com",
+            messagingSenderId: "189886953672",
+            appId: "1:189886953672:web:471d10656495c9e2b40dfd",
+            measurementId: "G-XEEEEN7LCK"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
+    </script>
+    <script src="jquery.js"></script>
+    <script src="hammer.js"></script>
+    <!-- <script src="swipeout.js"></script> -->
+    <script src="script.js"></script>
+</body>
+
+</html>
