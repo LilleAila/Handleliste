@@ -383,9 +383,3 @@ hr {
     border: 2px solid black;
     background-color: black;
 }
-
-@media (prefers-color-scheme: dark) {
-    * {
-        filter: invert(1);
-    }
-}

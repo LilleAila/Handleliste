@@ -79,8 +79,6 @@ function skriv(input) {
         }),
         color: clr
     });
-    //console.log('Trykket');
-    alert('Trykket');
     $('#checkbox').prop('checked', false);
     refresh();
 }
