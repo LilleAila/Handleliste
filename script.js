@@ -1,8 +1,11 @@
-var ider = 0;
+var ider = 0,
+    iderr = 100000;
 var pass = "110001 110001 110000 110000 110000 110001 100000 110001 110001 110000 110000 110000 110000 100000 110001 110001 110000 110000 110000 110001 100000 110001 110001 110000 110000 110000 110000 100000 110001 110001 110000 110000 110000 110000 100000 110001 110001 110000 110000 110000 110000 100000 110001 110001 110000 110000 110000 110000 100000 110001 110000 110000 110000 110000 110000 100000 110001 110001 110000 110000 110000 110001 100000 110001 110001 110000 110000 110000 110001 100000 110001 110001 110000 110000 110000 110000 100000 110001 110001 110000 110000 110000 110000 100000 110001 110001 110000 110000 110000 110000 100000 110001 110001 110000 110000 110000 110000 100000 110001 110001 110000 110000 110000 110001 100000 110001 110000 110000 110000 110000 110000 100000 110001 110001 110000 110000 110000 110001 100000 110001 110001 110000 110000 110000 110001 100000 110001 110001 110000 110000 110000 110001 100000 110001 110001 110000 110000 110000 110000 100000 110001 110001 110000 110000 110000 110000 100000 110001 110001 110000 110000 110000 110001 100000 110001 110001 110000 110000 110000 110001 100000 110001 110000 110000 110000 110000 110000 100000 110001 110001 110000 110000 110000 110001 100000 110001 110001 110000 110000 110000 110001 100000 110001 110001 110000 110000 110000 110001 100000 110001 110001 110000 110000 110000 110000 100000 110001 110001 110000 110000 110000 110000 100000 110001 110001 110000 110000 110000 110001 100000 110001 110001 110000 110000 110000 110001 100000 110001 110000 110000 110000 110000 110000 100000 110001 110001 110000 110000 110000 110001 100000 110001 110001 110000 110000 110000 110001 100000 110001 110001 110000 110000 110000 110000 100000 110001 110001 110000 110000 110000 110001 100000 110001 110001 110000 110000 110000 110001 100000 110001 110001 110000 110000 110000 110001 100000 110001 110001 110000 110000 110000 110001 100000 110001 110000 110000 110000 110000 110000 100000 110001 110001 110000 110000 110000 110001 100000 110001 110001 110000 110000 110000 110001 100000 110001 110001 110000 110000 110000 110001 100000 110001 110001 110000 110000 110000 110000 100000 110001 110001 110000 110000 110000 110000 100000 110001 110001 110000 110000 110000 110001 100000 110001 110001 110000 110000 110000 110000 100000 110001 110000 110000 110000 110000 110000 100000 110001 110001 110000 110000 110000 110001 100000 110001 110001 110000 110000 110000 110001 100000 110001 110001 110000 110000 110000 110000 100000 110001 110001 110000 110000 110000 110000 100000 110001 110001 110000 110000 110000 110001 100000 110001 110001 110000 110000 110000 110000 100000 110001 110001 110000 110000 110000 110000";
 //var list = document.getElementById('liste');
 var iddd = 0;
-var keys;
+var keys, keyz;
+var data, data1, data2, data3;
+var clr;
 
 function binaryto(input) {
     let inputt = input.split('');
@@ -35,17 +38,26 @@ function cfl(str) {
     return arrOfWordsCased.join(" ");
 }
 
-$('#skrive').click(function() {
-    let passordlogginn = prompt('Hva er passordet?');
-    if (passordlogginn == binaryfrom(binaryfrom(binaryfrom(pass)))) {
+$('#skrive').click(function () {
+    if (localStorage.getItem('login') == 'true') {
         skriv({
-            navn: prompt('Ting')
+            navn: prompt('Ting'),
+            color: prompt('Farge')
         });
     } else {
-        alert('Feil passord');
-        $('#checkbox').prop('checked', false);
+        let passordlogginn = prompt('Hva er passordet?');
+        if (passordlogginn == binaryfrom(binaryfrom(binaryfrom(pass)))) {
+            localStorage.setItem('login', 'true');
+            skriv({
+                navn: prompt('Ting'),
+                color: prompt('Farge')
+            });
+        } else {
+            alert('Feil passord');
+            $('#checkbox').prop('checked', false);
+        }
+        //$('body').append('<h1>Trykket</h1>');
     }
-    //$('body').append('<h1>Trykket</h1>');
 });
 
 // $('#les').click(function() {
@@ -55,21 +67,30 @@ $('#skrive').click(function() {
 // })
 
 function skriv(input) {
+    if (input.color == undefined || input.color == null || input.color == '' || input.color == ' ') {
+        clr = 'white';
+    } else {
+        clr = input.color;
+    }
     firebase.database().ref(`/handleliste/${Math.floor(Math.random() * Math.floor(Math.random() * Date.now()))}`).update({
-        navn: input.navn
+        navn: sanitizeHtml(input.navn, {
+            allowedTags: [],
+            allowedAttributes: {}
+        }),
+        color: clr
     });
-    console.log('Trykket');
+    //console.log('Trykket');
     alert('Trykket');
     $('#checkbox').prop('checked', false);
     refresh();
 }
 
 function les(input) {
-    firebase.database().ref(`/handleliste/${input.navn.toLowerCase()}`).once('value').then(function(snapshot) {
-        $('#myTable tbody tr td ul').append(`
-        <li id="${ider}" navn="${input.navn}" class="tr">
-            ${cofl(snapshot.val().navn.toLowerCase())}
-            <div class="btn clicked" navn="${input.navn}">Slett</div>
+    firebase.database().ref(`/handleliste/${input.navn}`).once('value').then(function (snapshot) {
+        $('#liste').append(`
+        <li id="${ider}" navn="${input.navn}" class="tr black" style="border-left: 5px solid ${snapshot.val().color};" farg="${snapshot.val().color};background-color: white;color: black;" tang="${cofl(snapshot.val().navn.toLowerCase())}">
+            <div class="tingen" style="width: 90%;height: 100%;">${cofl(snapshot.val().navn.toLowerCase())}</div>
+            <div class="buttn" navn="${input.navn}" style="width: 10%;height: 100%;">Slett</div>
         </li>
         `);
         ider++;
@@ -77,12 +98,25 @@ function les(input) {
     });
 }
 
-$('document').ready(function() {
-    $('li').each(function() {
+function les2(input) {
+    firebase.database().ref(`/handleliste-ferdig/${input.navn}`).once('value').then(function (snapshot) {
+        $('#liste2').append(`
+        <li id="${iderr}" navn="${input.navn}" class="ter black" style="border-left: 5px solid ${snapshot.val().color};" farg="${snapshot.val().color}" tang="${cofl(snapshot.val().navn.toLowerCase())}">
+            <div class="tingen" style="width: 90%;height: 100%;">${cofl(snapshot.val().navn.toLowerCase())}</div>
+            <div class="buttn" navn="${input.navn}" style="width: 10%;height: 100%;">Slett</div>
+        </li>
+        `);
+        iderr++;
+        //$('body').append(`<br/>${cfl(input.navn.toLowerCase())} sin bilett går ut ${dager[dato.getDay()]} den ${dato.getDate()}. ${maneder[dato.getMonth()]} ${dato.getFullYear()}, om ${dateDiff(new Date(), dato)}`);
+    });
+}
+
+$('document').ready(function () {
+    $('li').each(function () {
         $(this).attr('text', $(this).text());
         iddd++;
     });
-    console.log(`Satte attr text på ${iddd} ting`);
+    //console.log(`Satte attr text på ${iddd} ting`);
     refresh();
     // new SwipeOut(list, { btnText: "Slett" });
     // $('#liste li').on("delete", function(evt) {
@@ -91,13 +125,13 @@ $('document').ready(function() {
     // });
 });
 
-$('#delete').click(function() {
+$('#delete').click(function () {
     let passordlogginn = prompt('Hva er passordet?');
     if (passordlogginn == binaryfrom(binaryfrom(binaryfrom(pass)))) {
         let delet = confirm('Er du sikker på at du vil slette?');
         if (delet == true || delet) {
-            $.each($('.check:checked'), function(index) {
-                console.log($(this).attr('del'));
+            $.each($('.check:checked'), function (index) {
+                //console.log($(this).attr('del'));
                 firebase.database().ref(`/handleliste/${$(this).attr('del')}/`).set(null);
             });
             alert('Slettet');
@@ -112,67 +146,140 @@ $('#delete').click(function() {
 
 // $('.tr').onSwipe(function(results) {
 //     if (results.left == true) {
-//         console.log('Left');
+//         //console.log('Left');
 //     } else if (results.right == true) {
-//         console.log('Right')
+//         //console.log('Right')
 //     } else {
 //         return false;
 //     }
 // })
 
 function refresh() {
-    $('#myTable tbody').html(`
-    <tr class="header">
-        <th style="width:100%;">Handleliste</th>
-    </tr>
-    <tr>
-        <td>
-            <ul id="liste"></ul>
-        </td>
-    </tr>
-    `);
+    $('#liste').html('');
+    $('#liste2').html('');
     ider = 0;
-    firebase.database().ref(`/handleliste/`).once('value').then(function(snapshot) {
-        keys = Object.keys(snapshot.val());
-        console.log(keys);
-        for (var i = 0; i < keys.length; i++) {
-            les({
-                navn: keys[i]
-            });
-        }
-    });
-    setTimeout(function() {
-                let trclass = document.getElementsByClassName('tr');
-                let trcount = 0;
-                for (let i = 0; i < trclass.length; i++) {
-                    trcount++;
-                    Hammer(document.getElementById(i)).on('swipeleft', function() {
-                        $(`#${i} .btn`).addClass('swiped');
-                        $(`#${i} .btn`).removeClass('clicked');
-                        console.log('Swiped');
+    iderr = 100000;
+    setTimeout(function () {
+        firebase.database().ref(`/handleliste/`).once('value').then(function (snapshot) {
+            if (snapshot.val() != null && snapshot.val() != undefined) {
+                keys = Object.keys(snapshot.val());
+                //console.log(keys);
+                for (var i = 0; i < keys.length; i++) {
+                    les({
+                        navn: keys[i]
                     });
-                    Hammer(document.getElementById(i)).on('swiperight', function() {
-                        $(`#${i} .btn`).removeClass('swiped');
-                        $(`#${i} .btn`).addClass('clicked');
-                        console.log('Clicked');
+                }
+            }
+        });
+        firebase.database().ref(`/handleliste-ferdig/`).once('value').then(function (snapshot) {
+            if (snapshot.val() != null && snapshot.val() != undefined) {
+                keyz = Object.keys(snapshot.val());
+                //console.log(keyz);
+                for (var i = 0; i < keyz.length; i++) {
+                    les2({
+                        navn: keyz[i]
                     });
-                    $(`#${i}`).click(function() {
-                        $(`#${i} .btn`).removeClass('swiped');
-                        $(`#${i} .btn`).addClass('clicked');
-                        console.log('Clicked');
-                    });
-                    $(`#${i} .btn`).click(function() {
-                                firebase.database().ref(`/handleliste/${$(`#${i} .btn`).attr('navn')}/`).set(null);
-                                refresh();
-            });
-        }
-        console.log(`Det er ${trcount} ting med klassen tr.`);
-    }, 2000);
+                }
+            }
+        });
+        setTimeout(function () {
+            let trclass = document.getElementsByClassName('tr');
+            let trcount = 0;
+            for (let i = 0; i < trclass.length; i++) {
+                trcount++;
+                // Hammer(document.getElementById(i)).on('swipeleft', function () {
+                //     $(`#${i} .btn`).addClass('swiped');
+                //     $(`#${i} .btn`).removeClass('clicked');
+                //     //console.log('Swiped');
+                // });
+                // Hammer(document.getElementById(i)).on('swiperight', function () {
+                //     $(`#${i} .btn`).removeClass('swiped');
+                //     $(`#${i} .btn`).addClass('clicked');
+                //     //console.log('Clicked');
+                // });
+                // $(`#${i}`).click(function () {
+                //     $(`#${i} .btn`).removeClass('swiped');
+                //     $(`#${i} .btn`).addClass('clicked');
+                //     //console.log('Clicked');
+                // });
+                $(`#${i}`).click(function () {
+                    if (localStorage.getItem('login') == 'true') {
+                        //localStorage.setItem('login', 'true');
+                        firebase.database().ref(`/handleliste-ferdig/${$(`#${i}`).attr('navn')}/`).update({
+                            navn: $(`#${i}`).attr('tang'),
+                            color: $(`#${i}`).attr('farg')
+                        });
+                        firebase.database().ref(`/handleliste/${$(`#${i}`).attr('navn')}/`).set(null);
+                        refresh();
+                    } else {
+                        let passordlogginn = prompt('Hva er passordet?');
+                        if (passordlogginn == binaryfrom(binaryfrom(binaryfrom(pass)))) {
+                            localStorage.setItem('login', 'true');
+                            firebase.database().ref(`/handleliste/${$(`#${i} .btn`).attr('navn')}/`).set(null);
+                            refresh();
+                        } else {
+                            alert('Feil passord');
+                        }
+                    }
+                });
+            }
+            //console.log(`Det er ${trcount} ting med klassen tr.`);
+
+
+
+            let terclass = document.getElementsByClassName('ter');
+            let tercount = 99999;
+            for (let i = 0; i < terclass.length; i++) {
+                tercount++;
+                // Hammer(document.getElementById(tercount)).on('swipeleft', function () {
+                //     $(`#${tercount} .btn`).addClass('swiped');
+                //     $(`#${tercount} .btn`).removeClass('clicked');
+                //     //console.log('Swiped');
+                // });
+                // Hammer(document.getElementById(tercount)).on('swiperight', function () {
+                //     $(`#${tercount} .btn`).removeClass('swiped');
+                //     $(`#${tercount} .btn`).addClass('clicked');
+                //     //console.log('Clicked');
+                // });
+                // $(`#${tercount}`).click(function () {
+                //     $(`#${tercount} .btn`).removeClass('swiped');
+                //     $(`#${tercount} .btn`).addClass('clicked');
+                //     //console.log('Clicked');
+                // });
+                $(`#${tercount}`).click(function () {
+                    if (localStorage.getItem('login') == 'true') {
+                        //console.log($(`#${i}`).attr('ting'));
+                        //localStorage.setItem('login', 'true');
+                        firebase.database().ref(`/handleliste/${$(`#${tercount}`).attr('navn')}/`).update({
+                            navn: $(`#${tercount}`).attr('tang'),
+                            color: $(`#${tercount}`).attr('farg')
+                        });
+                        firebase.database().ref(`/handleliste-ferdig/${$(`#${tercount}`).attr('navn')}/`).set(null);
+                        refresh();
+                    } else {
+                        let passordlogginn = prompt('Hva er passordet?');
+                        if (passordlogginn == binaryfrom(binaryfrom(binaryfrom(pass)))) {
+                            localStorage.setItem('login', 'true');
+                            firebase.database().ref(`/handleliste/${$(`#${tercount}`).attr('navn')}/`).update({
+                                navn: $(`#${tercount}`).attr('tang'),
+                                color: $(`#${tercount}`).attr('farg')
+                            });
+                            firebase.database().ref(`/handleliste-ferdig/${$(`#${tercount}`).attr('navn')}/`).set(null);
+                            refresh();
+                        } else {
+                            alert('Feil passord');
+                        }
+                    }
+                });
+            }
+            //console.log(`Det er ${tercount - 100000} ting med klassen ter.`);
+        }, 2000);
+    }, 10)
 }
 // var listen = document.getElementById('listen')
 // new SwipeOut(listen, { btnText: "Slett" });
 // $('#listen li').on("delete", function(evt) {
-//     console.log($(this).attr('text'));
+//     //console.log($(this).attr('text'));
 // });
 
 /*firebase.database().ref(`/handleliste/`).on('value', function(snapshot) {
@@ -182,15 +289,35 @@ function refresh() {
     } else {
         return false;
     }
-    console.log('hei');
+    //console.log('hei');
 })*/
 
-setInterval(function() {
+setInterval(function () {
     //console.log('Hei');
-    firebase.database().ref(`/handleliste/`).once('value').then(function(snapshot) {
-        if (Object.keys(snapshot.val()).length != keys.length) {
-            console.log(snapshot.val());
-            refresh();
+    firebase.database().ref(`/handleliste/`).once('value').then(function (snapshot) {
+        if (snapshot.val() != null && snapshot.val() != undefined) {
+            if (Object.keys(snapshot.val()).length != keys.length) {
+                //console.log(snapshot.val());
+                refresh();
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    });
+}, 10000);
+
+setInterval(function () {
+    //console.log('Hei');
+    firebase.database().ref(`/handleliste-ferdig/`).once('value').then(function (snapshot) {
+        if (snapshot.val() != null && snapshot.val() != undefined) {
+            if (Object.keys(snapshot.val()).length != keyz.length) {
+                //console.log(snapshot.val());
+                refresh();
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
