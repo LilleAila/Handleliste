@@ -72,15 +72,19 @@ function skriv(input) {
     } else {
         clr = input.color;
     }
-    firebase.database().ref(`/handleliste/${Math.floor(Math.random() * Math.floor(Math.random() * Date.now()))}`).update({
-        navn: sanitizeHtml(input.navn, {
-            allowedTags: [],
-            allowedAttributes: {}
-        }),
-        color: clr
-    });
-    $('#checkbox').prop('checked', false);
-    refresh();
+    if (input.navn != null || input.navn != undefined) {
+        firebase.database().ref(`/handleliste/${Math.floor(Math.random() * Math.floor(Math.random() * Date.now()))}`).update({
+            navn: sanitizeHtml(input.navn, {
+                allowedTags: [],
+                allowedAttributes: {}
+            }),
+            color: clr
+        });
+        $('#checkbox').prop('checked', false);
+        refresh();
+    } else {
+        alert('Du må skrive inn en ting');
+    }
 }
 
 function les(input) {
