@@ -118,6 +118,7 @@ $('.buttn').click(function () {
         firebase.database().ref(`/handleliste/${$(this).attr('navn')}/`).set(null);
         firebase.database().ref(`/handleliste-ferdig/${$(this).attr('navn')}/`).set(null);
     }
+    refresh();
 })
 
 $('document').ready(function () {
