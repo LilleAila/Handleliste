@@ -38,7 +38,7 @@ function cfl(str) {
     return arrOfWordsCased.join(" ");
 }
 
-$('#skrive').click(function () {
+$('#label').click(function () {
     if (localStorage.getItem('login') == 'true') {
         skriv({
             navn: prompt('Ting'),
@@ -88,7 +88,7 @@ function les(input) {
         $('#liste').append(`
         <li id="${ider}" navn="${input.navn}" class="tr black" style="border-left: 5px solid ${snapshot.val().color};" farg="${snapshot.val().color};background-color: white;color: black;" tang="${cofl(snapshot.val().navn.toLowerCase())}">
             <div class="tingen" style="width: 90%;height: 100%;">${cofl(snapshot.val().navn.toLowerCase())}</div>
-            <div class="buttn" navn="${input.navn}" style="width: 10%;height: 100%;">Slett</div>
+            <div class="buttn" typ="en" navn="${input.navn}" style="width: 10%;height: 100%;">Slett</div>
         </li>
         `);
         ider++;
@@ -101,13 +101,24 @@ function les2(input) {
         $('#liste2').append(`
         <li id="${iderr}" navn="${input.navn}" class="ter black" style="border-left: 5px solid ${snapshot.val().color};" farg="${snapshot.val().color}" tang="${cofl(snapshot.val().navn.toLowerCase())}">
             <div class="tingen" style="width: 90%;height: 100%;">${cofl(snapshot.val().navn.toLowerCase())}</div>
-            <div class="buttn" navn="${input.navn}" style="width: 10%;height: 100%;">Slett</div>
+            <div class="buttn" typ="to" navn="${input.navn}" style="width: 10%;height: 100%;">Slett</div>
         </li>
         `);
         iderr++;
         //$('body').append(`<br/>${cfl(input.navn.toLowerCase())} sin bilett går ut ${dager[dato.getDay()]} den ${dato.getDate()}. ${maneder[dato.getMonth()]} ${dato.getFullYear()}, om ${dateDiff(new Date(), dato)}`);
     });
 }
+
+$('.buttn').click(function () {
+    if ($(this).attr('typ') == 'en') {
+        firebase.database().ref(`/handleliste/${$(this).attr('navn')}/`).set(null);
+    } else if ($(this).attr('typ') == 'to') {
+        firebase.database().ref(`/handleliste-ferdig/${$(this).attr('navn')}/`).set(null);
+    } else {
+        firebase.database().ref(`/handleliste/${$(this).attr('navn')}/`).set(null);
+        firebase.database().ref(`/handleliste-ferdig/${$(this).attr('navn')}/`).set(null);
+    }
+})
 
 $('document').ready(function () {
     $('li').each(function () {

@@ -89,6 +89,7 @@ hr {
     transition: background-color 0.5s ease-out;
     position: fixed;
     top: 2vmin;
+    display: none;
 }
 
 @keyframes right {
@@ -129,6 +130,7 @@ hr {
     user-select: none;
     display: grid;
     place-items: center;
+    display: none;
 }
 
 #checkbox {
@@ -143,6 +145,7 @@ hr {
 #checkbox:not(:checked)+#label+#ul {
     animation: left 0.5s forwards;
     pointer-events: none;
+    display: none;
 }
 
 #checkbox:checked+#label {
@@ -152,6 +155,7 @@ hr {
 
 #ul li:hover {
     background-color: rgba(153, 50, 204, 0.5);
+    display: none;
 }
 
 th img {
