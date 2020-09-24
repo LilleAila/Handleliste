@@ -338,4 +338,5 @@ function refresh() {
 
 setInterval(function () {
     refresh();
+    console.log('Laster på nytt')
 }, 60000);
