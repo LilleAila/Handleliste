@@ -76,38 +76,38 @@ function les2(input) {
 //     refresh();
 // });
 
-$('document').ready(function () {
-    $('li').each(function () {
-        $(this).attr('text', $(this).text());
-        iddd++;
-    });
-    //console.log(`Satte attr text på ${iddd} ting`);
-    refresh();
-    // new SwipeOut(list, { btnText: "Slett" });
-    // $('#liste li').on("delete", function(evt) {
-    //     firebase.database().ref(`/handleliste/handleliste/${$(this).attr('navn')}/`).set(null);
-    //     refresh();
-    // });
-});
+// $('document').ready(function () {
+//     $('li').each(function () {
+//         $(this).attr('text', $(this).text());
+//         iddd++;
+//     });
+//     //console.log(`Satte attr text på ${iddd} ting`);
+//     refresh();
+//     // new SwipeOut(list, { btnText: "Slett" });
+//     // $('#liste li').on("delete", function(evt) {
+//     //     firebase.database().ref(`/handleliste/handleliste/${$(this).attr('navn')}/`).set(null);
+//     //     refresh();
+//     // });
+// });
 
-$('#delete').click(function () {
-    let passordlogginn = prompt('Hva er passordet?');
-    if (passordlogginn == binaryfrom(binaryfrom(binaryfrom(pass)))) {
-        let delet = confirm('Er du sikker på at du vil slette?');
-        if (delet == true || delet) {
-            $.each($('.check:checked'), function (index) {
-                //console.log($(this).attr('del'));
-                firebase.database().ref(`/handleliste/handleliste/${$(this).attr('del')}/`).set(null);
-            });
-            alert('Slettet');
-            refresh();
-        } else {
-            alert('Sletter Ikke');
-        }
-    } else {
-        alert('Feil passord');
-    }
-});
+// $('#delete').click(function () {
+//     let passordlogginn = prompt('Hva er passordet?');
+//     if (passordlogginn == binaryfrom(binaryfrom(binaryfrom(pass)))) {
+//         let delet = confirm('Er du sikker på at du vil slette?');
+//         if (delet == true || delet) {
+//             $.each($('.check:checked'), function (index) {
+//                 //console.log($(this).attr('del'));
+//                 firebase.database().ref(`/handleliste/handleliste/${$(this).attr('del')}/`).set(null);
+//             });
+//             alert('Slettet');
+//             refresh();
+//         } else {
+//             alert('Sletter Ikke');
+//         }
+//     } else {
+//         alert('Feil passord');
+//     }
+// });
 
 // $('.tr').onSwipe(function(results) {
 //     if (results.left == true) {
@@ -128,7 +128,7 @@ function refresh() {
         firebase.database().ref(`/handleliste/handleliste/`).once('value').then(function (snapshot) {
             if (snapshot.val() != null && snapshot.val() != undefined) {
                 keys = Object.keys(snapshot.val());
-                //console.log(keys);
+                //console.log('les1-keys: ' + keys);
                 for (var i = 0; i < keys.length; i++) {
                     les({
                         navn: keys[i]
@@ -139,7 +139,7 @@ function refresh() {
         firebase.database().ref(`/handleliste/handleliste-kjopt/`).once('value').then(function (snapshot) {
             if (snapshot.val() != null && snapshot.val() != undefined) {
                 keyz = Object.keys(snapshot.val());
-                //console.log(keyz);
+                //console.log('les2-keys: ' + keyz);
                 for (var i = 0; i < keyz.length; i++) {
                     les2({
                         navn: keyz[i]
