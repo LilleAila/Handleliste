@@ -137,7 +137,7 @@ hr {
     opacity: 0;
 }
 
-#checkbox:checked+#label+#ul {
+/* #checkbox:checked+#label+#ul {
     display: block;
     animation: right 0.5s forwards;
 }
@@ -156,7 +156,7 @@ hr {
 #ul li:hover {
     background-color: rgba(153, 50, 204, 0.5);
     display: none;
-}
+} */
 
 th img {
     width: auto;
@@ -265,7 +265,6 @@ ul li {
 #liste,
 #liste2 li {
     width: 100%;
-    color: white;
 }
 
 .swiped {

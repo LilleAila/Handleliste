@@ -73,7 +73,7 @@ function skriv(input) {
         clr = input.color;
     }
     if (input.navn != null || input.navn != undefined) {
-        firebase.database().ref(`/handleliste/${Math.floor(Math.random() * Math.floor(Math.random() * Date.now()))}`).update({
+        firebase.database().ref(`/handleliste/handleliste/${Math.floor(Math.random() * Math.floor(Math.random() * Date.now()))}`).update({
             navn: sanitizeHtml(input.navn, {
                 allowedTags: [],
                 allowedAttributes: {}
@@ -88,9 +88,9 @@ function skriv(input) {
 }
 
 function les(input) {
-    firebase.database().ref(`/handleliste/${input.navn}`).once('value').then(function (snapshot) {
+    firebase.database().ref(`/handleliste/handleliste/${input.navn}`).once('value').then(function (snapshot) {
         $('#liste').append(`
-        <li id="${ider}" navn="${input.navn}" class="tr black" style="border-left: 5px solid ${snapshot.val().color};" farg="${snapshot.val().color};background-color: white;color: black;" tang="${cofl(snapshot.val().navn.toLowerCase())}">
+        <li id="${ider}" navn="${input.navn}" class="tr" style="border-left: 5px solid ${snapshot.val().color};" farg="${snapshot.val().color}" tang="${cofl(snapshot.val().navn.toLowerCase())}">
             <div class="tingen" style="width: 90%;height: 100%;">${cofl(snapshot.val().navn.toLowerCase())}</div>
             <div class="buttn" typ="en" navn="${input.navn}" style="width: 10%;height: 100%;">Slett</div>
         </li>
@@ -101,9 +101,9 @@ function les(input) {
 }
 
 function les2(input) {
-    firebase.database().ref(`/handleliste-ferdig/${input.navn}`).once('value').then(function (snapshot) {
+    firebase.database().ref(`/handleliste/handleliste-kjopt/${input.navn}`).once('value').then(function (snapshot) {
         $('#liste2').append(`
-        <li id="${iderr}" navn="${input.navn}" class="ter black" style="border-left: 5px solid ${snapshot.val().color};" farg="${snapshot.val().color}" tang="${cofl(snapshot.val().navn.toLowerCase())}">
+        <li id="${iderr}" navn="${input.navn}" class="ter" style="border-left: 5px solid ${snapshot.val().color};" farg="${snapshot.val().color}" tang="${cofl(snapshot.val().navn.toLowerCase())}">
             <div class="tingen" style="width: 90%;height: 100%;">${cofl(snapshot.val().navn.toLowerCase())}</div>
             <div class="buttn" typ="to" navn="${input.navn}" style="width: 10%;height: 100%;">Slett</div>
         </li>
@@ -113,17 +113,17 @@ function les2(input) {
     });
 }
 
-$('.buttn').click(function () {
-    if ($(this).attr('typ') == 'en') {
-        firebase.database().ref(`/handleliste/${$(this).attr('navn')}/`).set(null);
-    } else if ($(this).attr('typ') == 'to') {
-        firebase.database().ref(`/handleliste-ferdig/${$(this).attr('navn')}/`).set(null);
-    } else {
-        firebase.database().ref(`/handleliste/${$(this).attr('navn')}/`).set(null);
-        firebase.database().ref(`/handleliste-ferdig/${$(this).attr('navn')}/`).set(null);
-    }
-    refresh();
-})
+// $('.buttn').click(function () {
+//     if ($(this).attr('typ') == 'en') {
+//         firebase.database().ref(`/handleliste/handleliste/${$(this).attr('navn')}/`).set(null);
+//     } else if ($(this).attr('typ') == 'to') {
+//         firebase.database().ref(`/handleliste/handleliste-kjopt/${$(this).attr('navn')}/`).set(null);
+//     } else {
+//         firebase.database().ref(`/handleliste/handleliste/${$(this).attr('navn')}/`).set(null);
+//         firebase.database().ref(`/handleliste/handleliste-kjopt/${$(this).attr('navn')}/`).set(null);
+//     }
+//     refresh();
+// });
 
 $('document').ready(function () {
     $('li').each(function () {
@@ -134,7 +134,7 @@ $('document').ready(function () {
     refresh();
     // new SwipeOut(list, { btnText: "Slett" });
     // $('#liste li').on("delete", function(evt) {
-    //     firebase.database().ref(`/handleliste/${$(this).attr('navn')}/`).set(null);
+    //     firebase.database().ref(`/handleliste/handleliste/${$(this).attr('navn')}/`).set(null);
     //     refresh();
     // });
 });
@@ -146,7 +146,7 @@ $('#delete').click(function () {
         if (delet == true || delet) {
             $.each($('.check:checked'), function (index) {
                 //console.log($(this).attr('del'));
-                firebase.database().ref(`/handleliste/${$(this).attr('del')}/`).set(null);
+                firebase.database().ref(`/handleliste/handleliste/${$(this).attr('del')}/`).set(null);
             });
             alert('Slettet');
             refresh();
@@ -174,7 +174,7 @@ function refresh() {
     ider = 0;
     iderr = 100000;
     setTimeout(function () {
-        firebase.database().ref(`/handleliste/`).once('value').then(function (snapshot) {
+        firebase.database().ref(`/handleliste/handleliste/`).once('value').then(function (snapshot) {
             if (snapshot.val() != null && snapshot.val() != undefined) {
                 keys = Object.keys(snapshot.val());
                 //console.log(keys);
@@ -185,7 +185,7 @@ function refresh() {
                 }
             }
         });
-        firebase.database().ref(`/handleliste-ferdig/`).once('value').then(function (snapshot) {
+        firebase.database().ref(`/handleliste/handleliste-kjopt/`).once('value').then(function (snapshot) {
             if (snapshot.val() != null && snapshot.val() != undefined) {
                 keyz = Object.keys(snapshot.val());
                 //console.log(keyz);
@@ -216,23 +216,40 @@ function refresh() {
                 //     $(`#${i} .btn`).addClass('clicked');
                 //     //console.log('Clicked');
                 // });
-                $(`#${i}`).click(function () {
+                $(`#${i} .tingen`).click(function () {
                     if (localStorage.getItem('login') == 'true') {
                         //localStorage.setItem('login', 'true');
-                        firebase.database().ref(`/handleliste-ferdig/${$(`#${i}`).attr('navn')}/`).update({
+                        firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${i}`).attr('navn')}/`).update({
                             navn: $(`#${i}`).attr('tang'),
                             color: $(`#${i}`).attr('farg')
                         });
-                        firebase.database().ref(`/handleliste/${$(`#${i}`).attr('navn')}/`).set(null);
+                        firebase.database().ref(`/handleliste/handleliste/${$(`#${i}`).attr('navn')}/`).set(null);
                         refresh();
                     } else {
                         let passordlogginn = prompt('Hva er passordet?');
                         if (passordlogginn == binaryfrom(binaryfrom(binaryfrom(pass)))) {
                             localStorage.setItem('login', 'true');
-                            firebase.database().ref(`/handleliste/${$(`#${i} .btn`).attr('navn')}/`).set(null);
+                            firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${i}`).attr('navn')}/`).update({
+                                navn: $(`#${i}`).attr('tang'),
+                                color: $(`#${i}`).attr('farg')
+                            });
+                            firebase.database().ref(`/handleliste/handleliste/${$(`#${i}`).attr('navn')}/`).set(null);
                             refresh();
                         } else {
                             alert('Feil passord');
+                        }
+                    }
+                });
+                $(`#${i} .buttn`).click(function () {
+                    if (localStorage.getItem('login') == 'true') {
+                        firebase.database().ref(`/handleliste/handleliste/${$(`#${i}`).attr('navn')}/`).set(null);
+                        refresh();
+                    } else {
+                        let passordlogginn = prompt('Hva er passordet?');
+                        if (passordloggin == binaryfrom(binaryfrom(binaryfrom(pass)))) {
+                            localStorage.setItem('login', 'true');
+                            firebase.database().ref(`/handleliste/handleliste/${$(`#${i}`).attr('navn')}/`).set(null);
+                            refresh();
                         }
                     }
                 });
@@ -260,34 +277,47 @@ function refresh() {
                 //     $(`#${tercount} .btn`).addClass('clicked');
                 //     //console.log('Clicked');
                 // });
-                $(`#${tercount}`).click(function () {
+                $(`#${tercount} .tingen`).click(function () {
                     if (localStorage.getItem('login') == 'true') {
                         //console.log($(`#${i}`).attr('ting'));
                         //localStorage.setItem('login', 'true');
-                        firebase.database().ref(`/handleliste/${$(`#${tercount}`).attr('navn')}/`).update({
+                        firebase.database().ref(`/handleliste/handleliste/${$(`#${tercount}`).attr('navn')}/`).update({
                             navn: $(`#${tercount}`).attr('tang'),
                             color: $(`#${tercount}`).attr('farg')
                         });
-                        firebase.database().ref(`/handleliste-ferdig/${$(`#${tercount}`).attr('navn')}/`).set(null);
+                        firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${tercount}`).attr('navn')}/`).set(null);
                         refresh();
                     } else {
                         let passordlogginn = prompt('Hva er passordet?');
                         if (passordlogginn == binaryfrom(binaryfrom(binaryfrom(pass)))) {
                             localStorage.setItem('login', 'true');
-                            firebase.database().ref(`/handleliste/${$(`#${tercount}`).attr('navn')}/`).update({
+                            firebase.database().ref(`/handleliste/handleliste/${$(`#${tercount}`).attr('navn')}/`).update({
                                 navn: $(`#${tercount}`).attr('tang'),
                                 color: $(`#${tercount}`).attr('farg')
                             });
-                            firebase.database().ref(`/handleliste-ferdig/${$(`#${tercount}`).attr('navn')}/`).set(null);
+                            firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${tercount}`).attr('navn')}/`).set(null);
                             refresh();
                         } else {
                             alert('Feil passord');
                         }
                     }
                 });
+                $(`#${tercount} .buttn`).click(function () {
+                    if (localStorage.getItem('login') == 'true') {
+                        firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${tercount}`).attr('navn')}/`).set(null);
+                        refresh();
+                    } else {
+                        let passordlogginn = prompt('Hva er passordet?');
+                        if (passordloggin == binaryfrom(binaryfrom(binaryfrom(pass)))) {
+                            localStorage.setItem('login', 'true');
+                            firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${tercount}`).attr('navn')}/`).set(null);
+                            refresh();
+                        }
+                    }
+                });
             }
             //console.log(`Det er ${tercount - 100000} ting med klassen ter.`);
-        }, 2000);
+        }, 1000);
     }, 10)
 }
 // var listen = document.getElementById('listen')
@@ -296,7 +326,7 @@ function refresh() {
 //     //console.log($(this).attr('text'));
 // });
 
-/*firebase.database().ref(`/handleliste/`).on('value', function(snapshot) {
+/*firebase.database().ref(`/handleliste/handleliste/`).on('value', function(snapshot) {
     if (Object.keys(snapshot.val()).length != keys) {
         //console.log(snapshot.val());
         refresh();
@@ -308,7 +338,7 @@ function refresh() {
 
 setInterval(function () {
     //console.log('Hei');
-    firebase.database().ref(`/handleliste/`).once('value').then(function (snapshot) {
+    firebase.database().ref(`/handleliste/handleliste/`).once('value').then(function (snapshot) {
         if (snapshot.val() != null && snapshot.val() != undefined) {
             if (Object.keys(snapshot.val()).length != keys.length) {
                 //console.log(snapshot.val());
@@ -324,7 +354,7 @@ setInterval(function () {
 
 setInterval(function () {
     //console.log('Hei');
-    firebase.database().ref(`/handleliste-ferdig/`).once('value').then(function (snapshot) {
+    firebase.database().ref(`/handleliste/handleliste-kjopt/`).once('value').then(function (snapshot) {
         if (snapshot.val() != null && snapshot.val() != undefined) {
             if (Object.keys(snapshot.val()).length != keyz.length) {
                 //console.log(snapshot.val());
