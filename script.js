@@ -38,55 +38,6 @@ function cfl(str) {
     return arrOfWordsCased.join(" ");
 }
 
-$('#label').click(function () {
-    if (localStorage.getItem('login') == 'true') {
-        skriv({
-            navn: prompt('Ting'),
-            color: prompt('Farge')
-        });
-    } else {
-        let passordlogginn = prompt('Hva er passordet?');
-        if (passordlogginn == binaryfrom(binaryfrom(binaryfrom(pass)))) {
-            localStorage.setItem('login', 'true');
-            skriv({
-                navn: prompt('Ting'),
-                color: prompt('Farge')
-            });
-        } else {
-            alert('Feil passord');
-            $('#checkbox').prop('checked', false);
-        }
-        //$('body').append('<h1>Trykket</h1>');
-    }
-});
-
-// $('#les').click(function() {
-//     les({
-//         navn: prompt('Navn')
-//     })
-// })
-
-function skriv(input) {
-    if (input.color == undefined || input.color == null || input.color == '' || input.color == ' ') {
-        clr = 'white';
-    } else {
-        clr = input.color;
-    }
-    if (input.navn != null || input.navn != undefined) {
-        firebase.database().ref(`/handleliste/handleliste/${Math.floor(Math.random() * Math.floor(Math.random() * Date.now()))}`).update({
-            navn: sanitizeHtml(input.navn, {
-                allowedTags: [],
-                allowedAttributes: {}
-            }),
-            color: clr
-        });
-        $('#checkbox').prop('checked', false);
-        refresh();
-    } else {
-        alert('Du må skrive inn en ting');
-    }
-}
-
 function les(input) {
     firebase.database().ref(`/handleliste/handleliste/${input.navn}`).once('value').then(function (snapshot) {
         $('#liste').append(`
@@ -340,3 +291,91 @@ setInterval(function () {
     refresh();
     console.log('Laster på nytt')
 }, 60000);
+
+
+$('document').ready(function () {
+    refresh();
+});
+
+$('#navnpating').on('input', function () {
+    if ($(this).val().length != 0 && $(this).val() != '' && $(this).val() != ' ' && $(this).val() != null && $(this).val() != undefined) {
+        //console.log('changed and more than 0 characters!');
+        bringUpColorSelect();
+    } else {
+        takeDownColorSelect();
+    }
+})
+
+function bringUpColorSelect() {
+    $('#colorselect').css('display', 'flex');
+}
+
+function takeDownColorSelect() {
+    $('#colorselect').css('display', 'none');
+}
+
+// $('#label').click(function () {
+//     if (localStorage.getItem('login') == 'true') {
+//         skrive();
+//     } else {
+//         let passordlogginn = prompt('Hva er passordet?');
+//         if (passordlogginn == binaryfrom(binaryfrom(binaryfrom(pass)))) {
+//             localStorage.setItem('login', 'true');
+//             skrive();
+//         } else {
+//             alert('Feil passord');
+//             //$('#checkbox').prop('checked', false);
+//         }
+//         //$('body').append('<h1>Trykket</h1>');
+//     }
+// });
+
+$('.en').click(function () {
+    skrive('#f6bd60');
+});
+$('.to').click(function () {
+    skrive('#fb4d3d');
+});
+$('.tre').click(function () {
+    skrive('#6874e8');
+});
+$('.fire').click(function () {
+    skrive('#84a59d');
+});
+$('.fem').click(function () {
+    skrive('#f28482');
+});
+$('.seks').click(function () {
+    skrive('#84e296');
+});
+$('.syv').click(function () {
+    skrive('#0d5d56');
+});
+$('.atte').click(function () {
+    skrive('#258ea6');
+});
+$('.ni').click(function () {
+    skrive('#41393e');
+});
+
+function skrive(colr) {
+    skriv({
+        navn: $('#navnpating').val(),
+        color: colr
+    });
+    takeDownColorSelect();
+    $('#navnpating').val('');
+}
+
+function skriv(input) {
+    clr = input.color;
+    firebase.database().ref(`/handleliste/handleliste/${Math.floor(Math.random() * Math.floor(Math.random() * Date.now()))}`).update({
+        navn: sanitizeHtml(input.navn, {
+            allowedTags: [],
+            allowedAttributes: {}
+        }),
+        color: clr
+    });
+    $('#checkbox').prop('checked', false);
+    refresh();
+}

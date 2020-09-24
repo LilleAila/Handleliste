@@ -262,7 +262,7 @@ ul li {
     border: 1px solid black; */
 }
 
-#liste,
+#liste li,
 #liste2 li {
     width: 100%;
 }
@@ -385,4 +385,90 @@ hr {
     height: 2px;
     border: 2px solid black;
     background-color: black;
+}
+
+#navnpating {
+    width: 100%;
+    height: 10vh;
+    border: none;
+    outline: none;
+    padding: 0;
+    margin: 0;
+    padding-left: 5px;
+}
+
+#navnpating+hr,
+#navnpatinghr {
+    margin-top: 0;
+}
+
+#colorselect {
+    background-color: rgba(255, 255, 255, 0.5);
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    display: none;
+    width: 100vw;
+    height: 90vh;
+    bottom: 0;
+    left: 0;
+    flex-direction: column;
+    z-index: 104;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+.column {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 5px;
+    margin-top: 0;
+    margin-bottom: 0;
+    border-radius: 6px;
+    /* background-color: blue; */
+    cursor: pointer;
+}
+
+.en {
+    background-color: #f6bd60;
+}
+
+.to {
+    background-color: #fb4d3d;
+}
+
+.tre {
+    background-color: #6874e8;
+}
+
+.fire {
+    background-color: #84a59d;
+}
+
+.fem {
+    background-color: #f28482;
+}
+
+.seks {
+    background-color: #84e296;
+}
+
+.syv {
+    background-color: #0d5d56;
+}
+
+.atte {
+    background-color: #258ea6;
+}
+
+.ni {
+    background-color: #41393e;
 }
