@@ -338,25 +338,9 @@ function refresh() {
 
 setInterval(function () {
     //console.log('Hei');
-    firebase.database().ref(`/handleliste/handleliste/`).once('value').then(function (snapshot) {
+    firebase.database().ref(`/handleliste/`).once('value').then(function (snapshot) {
         if (snapshot.val() != null && snapshot.val() != undefined) {
             if (Object.keys(snapshot.val()).length != keys.length) {
-                //console.log(snapshot.val());
-                refresh();
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    });
-}, 10000);
-
-setInterval(function () {
-    //console.log('Hei');
-    firebase.database().ref(`/handleliste/handleliste-kjopt/`).once('value').then(function (snapshot) {
-        if (snapshot.val() != null && snapshot.val() != undefined) {
-            if (Object.keys(snapshot.val()).length != keyz.length) {
                 //console.log(snapshot.val());
                 refresh();
             } else {
