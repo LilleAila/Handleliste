@@ -125,7 +125,7 @@ function refresh() {
     ider = 0;
     iderr = 100000;
     setTimeout(function () {
-        firebase.database().ref(`/handleliste/handleliste/`).once('value').then(function (snapshot) {
+        firebase.database().ref(`/handleliste/handleliste/`).orderByChild('color').once('value').then(function (snapshot) {
             if (snapshot.val() != null && snapshot.val() != undefined) {
                 keys = Object.keys(snapshot.val());
                 //console.log('les1-keys: ' + keys);
@@ -136,7 +136,7 @@ function refresh() {
                 }
             }
         });
-        firebase.database().ref(`/handleliste/handleliste-kjopt/`).once('value').then(function (snapshot) {
+        firebase.database().ref(`/handleliste/handleliste-kjopt/`).orderByChild('color').once('value').then(function (snapshot) {
             if (snapshot.val() != null && snapshot.val() != undefined) {
                 keyz = Object.keys(snapshot.val());
                 //console.log('les2-keys: ' + keyz);
