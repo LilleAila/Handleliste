@@ -673,13 +673,11 @@ hr {
     from {
         opacity: 1;
         pointer-events: initial;
-        display: block;
     }
 
     50% {
         opacity: 0;
         pointer-events: none;
-        display: none;
     }
 
     to {
@@ -693,13 +691,11 @@ hr {
     from {
         opacity: 0;
         pointer-events: none;
-        display: none;
     }
 
     50% {
         opacity: 0;
         pointer-events: none;
-        display: block;
     }
 
     to {
