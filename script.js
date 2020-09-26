@@ -5,6 +5,91 @@ var iddd = 0;
 var keys, keyz;
 var data, data1, data2, data3;
 var clr;
+var database;
+//database = 'handleliste';
+$('document').ready(function () {
+    if (localStorage.getItem('liste') != '' && localStorage.getItem('liste') != null && localStorage.getItem('liste') != undefined) {
+        database = localStorage.getItem('liste');
+    } else {
+        localStorage.setItem('liste', 'handleliste');
+        database = 'handleliste';
+    }
+})
+$('document').ready(function () {
+    firebase.database().ref('/handleliste/').once('value').then(function (snapshot) {
+        let nokler = Object.keys(snapshot.val());
+        //console.log(nokler);
+        $('#navcontent').html(`
+        <div class="plusss">
+            <input type="text" id="nyliste" placeholder="Legg til en handleliste">
+            <span onclick="nyliste()">+</span>
+        </div>
+        <button id="slettknapp" class="fas fa-trash fa-5x" onclick="sletthandleliste()"></button>
+        `);
+        for (let i of nokler) {
+            if (i.slice(-5) != 'kjopt') {
+                $('#navcontent').append(`
+                <div class="listeknapp" onclick="openliste('${i}')">${cofl(i.toLowerCase())}</div>
+                `);
+            }
+        }
+    });
+});
+const nyliste = () => {
+    firebase.database().ref(`/handleliste/${$('#nyliste').val()}`).once('value').then(function (snapshot) {
+        if (snapshot.val() != null && snapshot.val != undefined) {
+            alert('Det er allerede en liste med dette navnet!');
+        } else {
+            lagliste($('#nyliste').val());
+        }
+    })
+}
+const lagliste = (val) => {
+    database = val;
+    localStorage.setItem('liste', val);
+    firebase.database().ref(`/handleliste/${database}/nyliste`).update({
+        color: 'f6bd60',
+        navn: 'Ny Liste',
+        count: 1
+    });
+    $.when().then(() => $('#nav').prop('checked', false)).then(() => setTimeout(() => refresh(), 2100));
+}
+const openliste = (listenavn) => {
+    database = listenavn;
+    localStorage.setItem('liste', listenavn)
+    //$.when().then(() => $('#nav').prop('checked', false)).then(() => setTimeout(() => refresh(), 2100));
+    refresh();
+}
+const sletthandleliste = () => {
+    if (localStorage.getItem('login') == 'true') {
+        let cnfrm = confirm('Er du sikker på at du vil slette denne handlelisten?');
+        if (cnfrm == true) {
+            firebase.database().ref(`/handleliste/${database}`).set(null);
+            firebase.database().ref(`/handleliste/${database}-kjopt`).set(null);
+            database = 'handleliste';
+            localStorage.setItem('liste', 'handleliste');
+        } else {
+            alert('Sletter ikke');
+        }
+        refresh()
+    } else {
+        let logginnpass = prompt('Passord');
+        if (logginnpass == binaryfrom(binaryfrom(binaryfrom(pass)))) {
+            localStorage.setItem('login', 'true');
+            let cnfrm = confirm('Er du sikker på at du vil slette denne handlelisten?');
+            if (cnfrm == true) {
+                firebase.database().ref(`/handleliste/${database}`).set(null);
+                firebase.database().ref(`/handleliste/${database}-kjopt`).set(null);
+                database = 'handleliste';
+                localStorage.setItem('liste', 'handleliste');
+            } else {
+                alert('Sletter ikke');
+            }
+            refresh()
+        }
+    }
+}
+const hideOpenNav = () => $('#nav').prop('checked', false)
 const runFuncs = (funcArr) => {
     for (let o of funcArr) {
         o();
@@ -54,7 +139,7 @@ function cfl(str) {
 }
 
 function les(input) {
-    firebase.database().ref(`/handleliste/handleliste/${input.navn}`).once('value').then(function (snapshot) {
+    firebase.database().ref(`/handleliste/${database}/${input.navn}`).once('value').then(function (snapshot) {
         $('#liste').append(`
         <li id="${ider}" navn="${input.navn}" class="tr" style="border-left: 5px solid #${snapshot.val().color};" farg="${snapshot.val().color}" tang="${cofl(snapshot.val().navn.toLowerCase())}" count="${snapshot.val().count}">
             <div class="tingen" style="width: 90%;height: 100%;" onclick="ned(${ider})">${cofl(snapshot.val().navn.toLowerCase())}</div>
@@ -70,7 +155,7 @@ function les(input) {
 }
 
 function les2(input) {
-    firebase.database().ref(`/handleliste/handleliste-kjopt/${input.navn}`).once('value').then(function (snapshot) {
+    firebase.database().ref(`/handleliste/${database}-kjopt/${input.navn}`).once('value').then(function (snapshot) {
         $('#liste2').append(`
         <li id="${iderr}" navn="${input.navn}" class="ter" style="border-left: 5px solid #${snapshot.val().color};" farg="${snapshot.val().color}" tang="${cofl(snapshot.val().navn.toLowerCase())}" count="${snapshot.val().count}">
             <div class="tingen" style="width: 90%;height: 100%;" onclick="opp(${iderr})">${cofl(snapshot.val().navn.toLowerCase())}</div>
@@ -91,12 +176,33 @@ function refresh() {
     ider = 0;
     iderr = 100000;
     $.when().then(() => {
-        firebase.database().ref(`/handleliste/handleliste/`).once('value').then(function (snapshot) {
+        $('#ikkekjopt').text(cofl(database.toLowerCase()))
+    }).then(() => {
+        firebase.database().ref('/handleliste/').once('value').then(function (snapshot) {
+            let nokler = Object.keys(snapshot.val());
+            //console.log(nokler);
+            $('#navcontent').html(`
+            <div class="plusss">
+                <input type="text" id="nyliste" placeholder="Legg til en handleliste">
+                <span onclick="nyliste()">+</span>
+            </div>
+            <button id="slettknapp" class="fas fa-trash fa-5x" onclick="sletthandleliste()"></button>
+            `);
+            for (let i of nokler) {
+                if (i.slice(-5) != 'kjopt') {
+                    $('#navcontent').append(`
+                    <div class="listeknapp" onclick="openliste('${i}')">${i}</div>
+                    `);
+                }
+            }
+        });
+    }).then(() => {
+        firebase.database().ref(`/handleliste/${database}/`).once('value').then(function (snapshot) {
             if (snapshot.val() != null && snapshot.val() != undefined) {
                 keys = Object.keys(snapshot.val());
                 let nokler1 = keys.join('\n');
-                console.log(`Handleliste nøkler:\n\n${nokler1}\n\nData:`);
-                console.log(snapshot.val());
+                // console.log(`Handleliste nøkler:\n\n${nokler1}\n\nData:`);
+                // console.log(snapshot.val());
                 for (let i = 0; i < keys.length; i++) {
                     les({
                         navn: keys[i]
@@ -105,12 +211,12 @@ function refresh() {
             }
         });
     }).then(() => {
-        firebase.database().ref(`/handleliste/handleliste-kjopt/`).once('value').then(function (snapshot) {
+        firebase.database().ref(`/handleliste/${database}-kjopt/`).once('value').then(function (snapshot) {
             if (snapshot.val() != null && snapshot.val() != undefined) {
                 keyz = Object.keys(snapshot.val())
                 let nokler2 = keyz.join('\n')
-                console.log(`Kjøpt nøkler:\n\n${nokler2}\n\nData:`);
-                console.log(snapshot.val());
+                // console.log(`Kjøpt nøkler:\n\n${nokler2}\n\nData:`);
+                // console.log(snapshot.val());
                 for (let i = 0; i < keyz.length; i++) {
                     les2({
                         navn: keyz[i]
@@ -123,7 +229,7 @@ function refresh() {
 
 setInterval(function () {
     refresh();
-    console.log('Laster på nytt')
+    // console.log('Laster på nytt')
 }, 60000);
 
 
@@ -208,7 +314,7 @@ function skriv(input) {
         allowedTags: [],
         allowedAttributes: {}
     })
-    firebase.database().ref(`/handleliste/handleliste/${clr}-${navnet}-${Math.floor(Math.random() * Math.floor(Math.random() * Date.now()))}`).update({
+    firebase.database().ref(`/handleliste/${database}/${clr}-${navnet}-${Math.floor(Math.random() * Math.floor(Math.random() * Date.now()))}`).update({
         navn: navnet,
         color: `${clr}`,
         count: 1
@@ -221,14 +327,14 @@ function pluss(input) {
     if (localStorage.getItem('login') == 'true') {
         $(`#${input} .buttnen .tall`).text(eval($(`#${input} .buttnen .tall`).text()) + 1);
         if (input >= 100000) {
-            firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${input}`).attr('navn')}`).update({
+            firebase.database().ref(`/handleliste/${database}-kjopt/${$(`#${input}`).attr('navn')}`).update({
                 navn: $(`#${input}`).attr('tang'),
                 color: $(`#${input}`).attr('farg'),
                 count: $(`#${input} .buttnen .tall`).text()
             });
             refresh();
         } else if (input <= 999999) {
-            firebase.database().ref(`/handleliste/handleliste/${$(`#${input}`).attr('navn')}`).update({
+            firebase.database().ref(`/handleliste/${database}/${$(`#${input}`).attr('navn')}`).update({
                 navn: $(`#${input}`).attr('tang'),
                 color: $(`#${input}`).attr('farg'),
                 count: $(`#${input} .buttnen .tall`).text()
@@ -241,14 +347,14 @@ function pluss(input) {
             localStorage.setItem('login', 'true');
             $(`#${input} .buttnen .tall`).text(eval($(`#${input} .buttnen .tall`).text()) + 1);
             if (input >= 100000) {
-                firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${input}`).attr('navn')}`).update({
+                firebase.database().ref(`/handleliste/${database}-kjopt/${$(`#${input}`).attr('navn')}`).update({
                     navn: $(`#${input}`).attr('tang'),
                     color: $(`#${input}`).attr('farg'),
                     count: $(`#${input} .buttnen .tall`).text()
                 });
                 refresh();
             } else if (input <= 999999) {
-                firebase.database().ref(`/handleliste/handleliste/${$(`#${input}`).attr('navn')}`).update({
+                firebase.database().ref(`/handleliste/${database}/${$(`#${input}`).attr('navn')}`).update({
                     navn: $(`#${input}`).attr('tang'),
                     color: $(`#${input}`).attr('farg'),
                     count: $(`#${input} .buttnen .tall`).text()
@@ -271,11 +377,11 @@ function minus(input) {
             if (eval($(`#${input} .buttnen .tall`).text()) == 0) {
                 let cnfrm = confirm('Vil du slette?');
                 if (cnfrm == true) {
-                    firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${input}`).attr('navn')}`).set(null);
+                    firebase.database().ref(`/handleliste/${database}-kjopt/${$(`#${input}`).attr('navn')}`).set(null);
                     refresh();
                 }
             } else {
-                firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${input}`).attr('navn')}`).update({
+                firebase.database().ref(`/handleliste/${database}-kjopt/${$(`#${input}`).attr('navn')}`).update({
                     navn: $(`#${input}`).attr('tang'),
                     color: $(`#${input}`).attr('farg'),
                     count: $(`#${input} .buttnen .tall`).text()
@@ -286,11 +392,11 @@ function minus(input) {
             if (eval($(`#${input} .buttnen .tall`).text()) == 0) {
                 let cnfrm = confirm('Vil du slette?');
                 if (cnfrm == true) {
-                    firebase.database().ref(`/handleliste/handleliste/${$(`#${input}`).attr('navn')}`).set(null);
+                    firebase.database().ref(`/handleliste/${database}/${$(`#${input}`).attr('navn')}`).set(null);
                     refresh();
                 }
             } else {
-                firebase.database().ref(`/handleliste/handleliste/${$(`#${input}`).attr('navn')}`).update({
+                firebase.database().ref(`/handleliste/${database}/${$(`#${input}`).attr('navn')}`).update({
                     navn: $(`#${input}`).attr('tang'),
                     color: $(`#${input}`).attr('farg'),
                     count: $(`#${input} .buttnen .tall`).text()
@@ -307,11 +413,11 @@ function minus(input) {
                 if (eval($(`#${input} .buttnen .tall`).text()) == 0) {
                     let cnfrm = confirm('Vil du slette?');
                     if (cnfrm == true) {
-                        firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${input}`).attr('navn')}`).set(null);
+                        firebase.database().ref(`/handleliste/${database}-kjopt/${$(`#${input}`).attr('navn')}`).set(null);
                         refresh();
                     }
                 } else {
-                    firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${input}`).attr('navn')}`).update({
+                    firebase.database().ref(`/handleliste/${database}-kjopt/${$(`#${input}`).attr('navn')}`).update({
                         navn: $(`#${input}`).attr('tang'),
                         color: $(`#${input}`).attr('farg'),
                         count: $(`#${input} .buttnen .tall`).text()
@@ -322,11 +428,11 @@ function minus(input) {
                 if (eval($(`#${input} .buttnen .tall`).text()) == 0) {
                     let cnfrm = confirm('Vil du slette?');
                     if (cnfrm == true) {
-                        firebase.database().ref(`/handleliste/handleliste/${$(`#${input}`).attr('navn')}`).set(null);
+                        firebase.database().ref(`/handleliste/${database}/${$(`#${input}`).attr('navn')}`).set(null);
                         refresh();
                     }
                 } else {
-                    firebase.database().ref(`/handleliste/handleliste/${$(`#${input}`).attr('navn')}`).update({
+                    firebase.database().ref(`/handleliste/${database}/${$(`#${input}`).attr('navn')}`).update({
                         navn: $(`#${input}`).attr('tang'),
                         color: $(`#${input}`).attr('farg'),
                         count: $(`#${input} .buttnen .tall`).text()
@@ -342,23 +448,23 @@ function minus(input) {
 
 function opp(id) {
     if (localStorage.getItem('login') == 'true') {
-        firebase.database().ref(`/handleliste/handleliste/${$(`#${id}`).attr('navn')}/`).update({
+        firebase.database().ref(`/handleliste/${database}/${$(`#${id}`).attr('navn')}/`).update({
             navn: $(`#${id}`).attr('tang'),
             color: $(`#${id}`).attr('farg'),
             count: $(`#${id}`).attr('count')
         });
-        firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${id}`).attr('navn')}/`).set(null);
+        firebase.database().ref(`/handleliste/${database}-kjopt/${$(`#${id}`).attr('navn')}/`).set(null);
         refresh();
     } else {
         let passordlogginn = prompt('Hva er passordet?');
         if (passordlogginn == binaryfrom(binaryfrom(binaryfrom(pass)))) {
             localStorage.setItem('login', 'true');
-            firebase.database().ref(`/handleliste/handleliste/${$(`#${id}`).attr('navn')}/`).update({
+            firebase.database().ref(`/handleliste/${database}/${$(`#${id}`).attr('navn')}/`).update({
                 navn: $(`#${id}`).attr('tang'),
                 color: $(`#${id}`).attr('farg'),
                 count: $(`#${id}`).attr('count')
             });
-            firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${id}`).attr('navn')}/`).set(null);
+            firebase.database().ref(`/handleliste/${database}-kjopt/${$(`#${id}`).attr('navn')}/`).set(null);
             refresh();
         } else {
             alert('Feil passord');
@@ -368,23 +474,23 @@ function opp(id) {
 
 function ned(id) {
     if (localStorage.getItem('login') == 'true') {
-        firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${id}`).attr('navn')}/`).update({
+        firebase.database().ref(`/handleliste/${database}-kjopt/${$(`#${id}`).attr('navn')}/`).update({
             navn: $(`#${id}`).attr('tang'),
             color: $(`#${id}`).attr('farg'),
             count: $(`#${id}`).attr('count')
         });
-        firebase.database().ref(`/handleliste/handleliste/${$(`#${id}`).attr('navn')}/`).set(null);
+        firebase.database().ref(`/handleliste/${database}/${$(`#${id}`).attr('navn')}/`).set(null);
         refresh();
     } else {
         let passordlogginn = prompt('Hva er passordet?');
         if (passordlogginn == binaryfrom(binaryfrom(binaryfrom(pass)))) {
             localStorage.setItem('login', 'true');
-            firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${id}`).attr('navn')}/`).update({
+            firebase.database().ref(`/handleliste/${database}-kjopt/${$(`#${id}`).attr('navn')}/`).update({
                 navn: $(`#${id}`).attr('tang'),
                 color: $(`#${id}`).attr('farg'),
                 count: $(`#${id}`).attr('count')
             });
-            firebase.database().ref(`/handleliste/handleliste/${$(`#${id}`).attr('navn')}/`).set(null);
+            firebase.database().ref(`/handleliste/${database}/${$(`#${id}`).attr('navn')}/`).set(null);
             refresh();
         } else {
             alert('Feil passord');

@@ -19,21 +19,24 @@
     <link rel="apple-touch-icon" sizes="60x60" href="apple-touch-icon-ipad-76x76.png">
     <link rel="apple-touch-icon" sizes="114x114" href="apple-touch-icon-iphone-retina-120x120.png">
     <link rel="apple-touch-icon" sizes="144x144" href="apple-touch-icon-ipad-retina-152x152.png">
+    <script src="https://kit.fontawesome.com/50ec81bb5e.js" crossorigin="anonymous"></script>
 </head>
 
 <body id="Body">
-    <!--<button id="skriv">Skriv</button>
-    <button id="les">Les</button>
-    <hr/>-->
-    <!--<div id="skriv">&times;</div>-->
-    <!-- <div class="container" id="skriv">
-        <input id="checkbox" type="checkbox" />
-        <label for="checkbox" id="label">&times;</label>
-        <ul id="ul">
-            <li id="skrive">Legg til</li>
-        </ul>
-    </div> -->
-    <input id="navnpating" placeholder="Legg til en ting">
+    <input type="checkbox" class="nav" name="nav" id="nav">
+    <label for="nav" id="navlabel">
+        <div class="nav-icon">
+            <div></div>
+        </div>
+    </label>
+    <div id="navcontent">
+        <div class="plusss">
+            <input type="text" id="nyliste">
+            <span onclick="nyliste()">+</span>
+        </div>
+        <button id="slettknapp" class="fas fa-trash fa-5x"></button>
+    </div>
+    <input id="navnpating" placeholder="Legg til en ting" onclick="hideOpenNav()">
     <hr id="navnpatinghr" />
     <div id="colorselect">
         <div class="row row1">

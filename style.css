@@ -535,3 +535,222 @@ hr {
         height: 100%;
     }
 }
+
+.nav-icon {
+    margin: 1em;
+    width: 40px;
+}
+
+.nav-icon:after,
+.nav-icon:before,
+.nav-icon div {
+    background-color: #000;
+    border-radius: 3px;
+    content: '';
+    display: block;
+    height: 5px;
+    margin: 7px 0;
+    transition: all .2s ease-in-out;
+    cursor: pointer;
+}
+
+.nav-icon {
+    transform: scale(1.4);
+}
+
+#nav {
+    opacity: 0;
+    z-index: -100;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#navlabel {
+    cursor: pointer;
+    position: fixed;
+    z-index: 109;
+    top: 10vh;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.25);
+    /* border: 1px dashed black; */
+}
+
+#nav:checked+#navlabel .nav-icon:before {
+    transition: all .2s ease-in-out;
+    transform: translateY(12px) rotate(135deg);
+}
+
+#nav:checked+#navlabel .nav-icon:after {
+    transition: all .2s ease-in-out;
+    transform: translateY(-12px) rotate(-135deg);
+}
+
+#nav:checked+#navlabel .nav-icon div {
+    transition: all .2s ease-in-out;
+    transform: scale(0);
+}
+
+#nav:checked+#navlabel {
+    /* right: 50vw; */
+    animation: fromRight 1s ease forwards;
+}
+
+#nav:not(:checked)+#navlabel {
+    /* right: 50vw; */
+    animation: fromLeft 2s ease forwards;
+}
+
+@keyframes fromRight {
+    from {
+        right: 0;
+    }
+
+    to {
+        right: 50vw;
+    }
+}
+
+@keyframes fromLeft {
+    from {
+        right: 50vw;
+    }
+
+    50% {
+        right: 50vw;
+    }
+
+    to {
+        right: 0;
+    }
+}
+
+#navcontent {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    height: 100vh;
+    width: 50vw;
+    background-color: #000000;
+    color: #FFFFFF;
+    z-index: 109;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    place-items: center;
+    overflow-y: scroll;
+}
+
+#navcontent .listeknapp {
+    height: 100%;
+    width: 100%;
+    display: grid;
+    place-items: center;
+    transition: background-color 0.5s ease-out;
+    cursor: pointer;
+    min-height: 10vh;
+    margin: 0;
+    margin-top: 2.25vh;
+    margin-bottom: 2.25vh
+}
+
+#navcontent .listeknapp:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+#nav:not(:checked)+#navlabel+#navcontent {
+    /* display: none; */
+    animation: displaynone 2s ease forwards;
+}
+
+#nav:checked+#navlabel+#navcontent {
+    /* display: block; */
+    animation: display 2s ease forwards;
+}
+
+@keyframes displaynone {
+    from {
+        opacity: 1;
+        pointer-events: initial;
+    }
+
+    50% {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    to {
+        opacity: 0;
+        pointer-events: none;
+    }
+}
+
+@keyframes display {
+    from {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    50% {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    to {
+        opacity: 1;
+        pointer-events: initial;
+    }
+}
+
+.plusss {
+    height: 10vh;
+    width: 50vw;
+    background-color: rgba(255, 255, 255, 0.3);
+    transition: background-color 0.5s ease-out;
+    display: flex;
+    place-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.plusss input {
+    width: 90%;
+    height: 100%;
+    border: none;
+    outline: none;
+    padding: 0;
+    margin: 0;
+    padding-left: 5px;
+    border-left: 1px dashed black;
+}
+
+.plusss span {
+    width: 10%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    background-color: #808080;
+    transition: background-color 0.5s ease-out;
+    font-weight: bolder;
+    font-size: 9vh;
+}
+
+.plusss span:hover {
+    background-color: green;
+}
+
+#slettknapp {
+    color: #000000;
+    cursor: pointer;
+    position: fixed;
+    left: 1vw;
+    bottom: 1vh;
+    z-index: 109;
+}
+
+#slettknapp:hover {
+    color: #FF0000;
+}
