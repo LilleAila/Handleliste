@@ -57,7 +57,7 @@ function les(input) {
     firebase.database().ref(`/handleliste/handleliste/${input.navn}`).once('value').then(function (snapshot) {
         $('#liste').append(`
         <li id="${ider}" navn="${input.navn}" class="tr" style="border-left: 5px solid #${snapshot.val().color};" farg="${snapshot.val().color}" tang="${cofl(snapshot.val().navn.toLowerCase())}" count="${snapshot.val().count}">
-            <div class="tingen" style="width: 90%;height: 100%;">${cofl(snapshot.val().navn.toLowerCase())}</div>
+            <div class="tingen" style="width: 90%;height: 100%;" onclick="ned(${ider})">${cofl(snapshot.val().navn.toLowerCase())}</div>
             <div class="buttnen" typ="en" navn="${input.navn}">
                 <div class="tall" parentid="${ider}">${snapshot.val().count}</div>
                 <div class="pluss" parentid="${ider}" onclick="pluss(${ider})">+</div>
@@ -73,7 +73,7 @@ function les2(input) {
     firebase.database().ref(`/handleliste/handleliste-kjopt/${input.navn}`).once('value').then(function (snapshot) {
         $('#liste2').append(`
         <li id="${iderr}" navn="${input.navn}" class="ter" style="border-left: 5px solid #${snapshot.val().color};" farg="${snapshot.val().color}" tang="${cofl(snapshot.val().navn.toLowerCase())}" count="${snapshot.val().count}">
-            <div class="tingen" style="width: 90%;height: 100%;">${cofl(snapshot.val().navn.toLowerCase())}</div>
+            <div class="tingen" style="width: 90%;height: 100%;" onclick="opp(${iderr})">${cofl(snapshot.val().navn.toLowerCase())}</div>
             <div class="buttnen" typ="to" navn="${input.navn}">
                 <div class="tall" parentid="${iderr}">${snapshot.val().count}</div>
                 <div class="pluss" parentid="${iderr}" onclick="pluss(${iderr})">+</div>
@@ -118,81 +118,6 @@ function refresh() {
                 }
             }
         });
-    }).then(function () {
-        let trclass = document.getElementsByClassName('tr');
-        let trcount = 0;
-        for (let i = 0; i < trclass.length; i++) {
-            trcount++;
-            $(`#${i} .tingen`).click(function () {
-                if (localStorage.getItem('login') == 'true') {
-                    firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${i}`).attr('navn')}/`).update({
-                        navn: $(`#${i}`).attr('tang'),
-                        color: $(`#${i}`).attr('farg'),
-                        count: $(`#${i}`).attr('count')
-                    });
-                    firebase.database().ref(`/handleliste/handleliste/${$(`#${i}`).attr('navn')}/`).set(null);
-                    refresh();
-                } else {
-                    let passordlogginn = prompt('Hva er passordet?');
-                    if (passordlogginn == binaryfrom(binaryfrom(binaryfrom(pass)))) {
-                        localStorage.setItem('login', 'true');
-                        firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${i}`).attr('navn')}/`).update({
-                            navn: $(`#${i}`).attr('tang'),
-                            color: $(`#${i}`).attr('farg'),
-                            count: $(`#${i}`).attr('count')
-                        });
-                        firebase.database().ref(`/handleliste/handleliste/${$(`#${i}`).attr('navn')}/`).set(null);
-                        refresh();
-                    } else {
-                        alert('Feil passord');
-                    }
-                }
-            });
-            $(`#${i} .buttn`).click(function () {
-                if (localStorage.getItem('login') == 'true') {
-                    firebase.database().ref(`/handleliste/handleliste/${$(`#${i}`).attr('navn')}/`).set(null);
-                    refresh();
-                } else {
-                    let passordlogginn = prompt('Hva er passordet?');
-                    if (passordloggin == binaryfrom(binaryfrom(binaryfrom(pass)))) {
-                        localStorage.setItem('login', 'true');
-                        firebase.database().ref(`/handleliste/handleliste/${$(`#${i}`).attr('navn')}/`).set(null);
-                        refresh();
-                    }
-                }
-            });
-        }
-
-        let terclass = document.getElementsByClassName('ter');
-        let tercount = 99999;
-        for (let i = 0; i < terclass.length; i++) {
-            tercount++;
-            $(`#${tercount} .tingen`).click(function () {
-                if (localStorage.getItem('login') == 'true') {
-                    firebase.database().ref(`/handleliste/handleliste/${$(`#${tercount}`).attr('navn')}/`).update({
-                        navn: $(`#${tercount}`).attr('tang'),
-                        color: $(`#${tercount}`).attr('farg'),
-                        count: $(`#${tercount}`).attr('count')
-                    });
-                    firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${tercount}`).attr('navn')}/`).set(null);
-                    refresh();
-                } else {
-                    let passordlogginn = prompt('Hva er passordet?');
-                    if (passordlogginn == binaryfrom(binaryfrom(binaryfrom(pass)))) {
-                        localStorage.setItem('login', 'true');
-                        firebase.database().ref(`/handleliste/handleliste/${$(`#${tercount}`).attr('navn')}/`).update({
-                            navn: $(`#${tercount}`).attr('tang'),
-                            color: $(`#${tercount}`).attr('farg'),
-                            count: $(`#${tercount}`).attr('count')
-                        });
-                        firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${tercount}`).attr('navn')}/`).set(null);
-                        refresh();
-                    } else {
-                        alert('Feil passord');
-                    }
-                }
-            });
-        }
     });
 }
 
@@ -409,6 +334,58 @@ function minus(input) {
                     refresh();
                 }
             }
+        } else {
+            alert('Feil passord');
+        }
+    }
+}
+
+function opp(id) {
+    if (localStorage.getItem('login') == 'true') {
+        firebase.database().ref(`/handleliste/handleliste/${$(`#${id}`).attr('navn')}/`).update({
+            navn: $(`#${id}`).attr('tang'),
+            color: $(`#${id}`).attr('farg'),
+            count: $(`#${id}`).attr('count')
+        });
+        firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${id}`).attr('navn')}/`).set(null);
+        refresh();
+    } else {
+        let passordlogginn = prompt('Hva er passordet?');
+        if (passordlogginn == binaryfrom(binaryfrom(binaryfrom(pass)))) {
+            localStorage.setItem('login', 'true');
+            firebase.database().ref(`/handleliste/handleliste/${$(`#${id}`).attr('navn')}/`).update({
+                navn: $(`#${id}`).attr('tang'),
+                color: $(`#${id}`).attr('farg'),
+                count: $(`#${id}`).attr('count')
+            });
+            firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${id}`).attr('navn')}/`).set(null);
+            refresh();
+        } else {
+            alert('Feil passord');
+        }
+    }
+}
+
+function ned(id) {
+    if (localStorage.getItem('login') == 'true') {
+        firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${id}`).attr('navn')}/`).update({
+            navn: $(`#${id}`).attr('tang'),
+            color: $(`#${id}`).attr('farg'),
+            count: $(`#${id}`).attr('count')
+        });
+        firebase.database().ref(`/handleliste/handleliste/${$(`#${id}`).attr('navn')}/`).set(null);
+        refresh();
+    } else {
+        let passordlogginn = prompt('Hva er passordet?');
+        if (passordlogginn == binaryfrom(binaryfrom(binaryfrom(pass)))) {
+            localStorage.setItem('login', 'true');
+            firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${id}`).attr('navn')}/`).update({
+                navn: $(`#${id}`).attr('tang'),
+                color: $(`#${id}`).attr('farg'),
+                count: $(`#${id}`).attr('count')
+            });
+            firebase.database().ref(`/handleliste/handleliste/${$(`#${id}`).attr('navn')}/`).set(null);
+            refresh();
         } else {
             alert('Feil passord');
         }
