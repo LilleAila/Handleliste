@@ -362,7 +362,7 @@ body {
     color: black;
 }
 
-.ter div:not(.buttn) {
+.ter div.tingen {
     text-decoration: line-through;
 }
 
@@ -471,4 +471,67 @@ hr {
 
 .ni {
     background-color: #41393e;
+}
+
+.buttnen {
+    width: 10%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.buttnen * {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    display: grid;
+    place-items: center;
+    font-weight: bolder;
+}
+
+.pluss:hover {
+    background-color: green;
+    color: white;
+}
+
+.minus:hover {
+    background-color: red;
+    color: white;
+}
+
+.pluss,
+.minus {
+    cursor: pointer;
+    user-select: none;
+}
+
+.tall {
+    background-color: lightgrey;
+    color: black;
+}
+
+.buttnen {
+    width: 10%;
+    height: 100%;
+}
+
+@media only screen and (max-width: 400px) {
+    .buttnen {
+        width: 20%;
+        height: 100%;
+    }
+}
+
+@media only screen and (max-width: 200px) {
+    .buttnen {
+        width: 30%;
+        height: 100%;
+    }
+}
+
+@media only screen and (max-width: 150px) {
+    .buttnen {
+        width: 40%;
+        height: 100%;
+    }
 }

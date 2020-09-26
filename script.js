@@ -41,9 +41,13 @@ function cfl(str) {
 function les(input) {
     firebase.database().ref(`/handleliste/handleliste/${input.navn}`).once('value').then(function (snapshot) {
         $('#liste').append(`
-        <li id="${ider}" navn="${input.navn}" class="tr" style="border-left: 5px solid #${snapshot.val().color};" farg="${snapshot.val().color}" tang="${cofl(snapshot.val().navn.toLowerCase())}">
+        <li id="${ider}" navn="${input.navn}" class="tr" style="border-left: 5px solid #${snapshot.val().color};" farg="${snapshot.val().color}" tang="${cofl(snapshot.val().navn.toLowerCase())}" count="${snapshot.val().count}">
             <div class="tingen" style="width: 90%;height: 100%;">${cofl(snapshot.val().navn.toLowerCase())}</div>
-            <div class="buttn" typ="en" navn="${input.navn}" style="width: 10%;height: 100%;">Slett</div>
+            <div class="buttnen" typ="en" navn="${input.navn}">
+                <div class="tall" parentid="${ider}">${snapshot.val().count}</div>
+                <div class="pluss" parentid="${ider}" onclick="pluss(${ider})">+</div>
+                <div class="minus" parentid="${ider}" onclick="minus(${ider})">-</div>
+            </div>
         </li>
         `);
         ider++;
@@ -54,9 +58,13 @@ function les(input) {
 function les2(input) {
     firebase.database().ref(`/handleliste/handleliste-kjopt/${input.navn}`).once('value').then(function (snapshot) {
         $('#liste2').append(`
-        <li id="${iderr}" navn="${input.navn}" class="ter" style="border-left: 5px solid #${snapshot.val().color};" farg="${snapshot.val().color}" tang="${cofl(snapshot.val().navn.toLowerCase())}">
+        <li id="${iderr}" navn="${input.navn}" class="ter" style="border-left: 5px solid #${snapshot.val().color};" farg="${snapshot.val().color}" tang="${cofl(snapshot.val().navn.toLowerCase())}" count="${snapshot.val().count}">
             <div class="tingen" style="width: 90%;height: 100%;">${cofl(snapshot.val().navn.toLowerCase())}</div>
-            <div class="buttn" typ="to" navn="${input.navn}" style="width: 10%;height: 100%;">Slett</div>
+            <div class="buttnen" typ="to" navn="${input.navn}">
+                <div class="tall" parentid="${iderr}">${snapshot.val().count}</div>
+                <div class="pluss" parentid="${iderr}" onclick="pluss(${iderr})">+</div>
+                <div class="minus" parentid="${iderr}" onclick="minus(${iderr})">-</div>
+            </div>
         </li>
         `);
         iderr++;
@@ -173,7 +181,7 @@ function refresh() {
                         firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${i}`).attr('navn')}/`).update({
                             navn: $(`#${i}`).attr('tang'),
                             color: $(`#${i}`).attr('farg'),
-                            sort: `${$(`#${i}`).attr('farg')}-${$(`#${i}`).attr('tang')}`
+                            count: $(`#${i}`).attr('count')
                         });
                         firebase.database().ref(`/handleliste/handleliste/${$(`#${i}`).attr('navn')}/`).set(null);
                         refresh();
@@ -184,7 +192,7 @@ function refresh() {
                             firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${i}`).attr('navn')}/`).update({
                                 navn: $(`#${i}`).attr('tang'),
                                 color: $(`#${i}`).attr('farg'),
-                                sort: `${$(`#${i}`).attr('farg')}-${$(`#${i}`).attr('tang')}`
+                                count: $(`#${i}`).attr('count')
                             });
                             firebase.database().ref(`/handleliste/handleliste/${$(`#${i}`).attr('navn')}/`).set(null);
                             refresh();
@@ -237,7 +245,7 @@ function refresh() {
                         firebase.database().ref(`/handleliste/handleliste/${$(`#${tercount}`).attr('navn')}/`).update({
                             navn: $(`#${tercount}`).attr('tang'),
                             color: $(`#${tercount}`).attr('farg'),
-                            sort: `${$(`#${tercount}`).attr('farg')}-${$(`#${tercount}`).attr('tang')}`
+                            count: $(`#${tercount}`).attr('count')
                         });
                         firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${tercount}`).attr('navn')}/`).set(null);
                         refresh();
@@ -248,25 +256,12 @@ function refresh() {
                             firebase.database().ref(`/handleliste/handleliste/${$(`#${tercount}`).attr('navn')}/`).update({
                                 navn: $(`#${tercount}`).attr('tang'),
                                 color: $(`#${tercount}`).attr('farg'),
-                                sort: `${$(`#${tercount}`).attr('farg')}-${$(`#${tercount}`).attr('tang')}`
+                                count: $(`#${tercount}`).attr('count')
                             });
                             firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${tercount}`).attr('navn')}/`).set(null);
                             refresh();
                         } else {
                             alert('Feil passord');
-                        }
-                    }
-                });
-                $(`#${tercount} .buttn`).click(function () {
-                    if (localStorage.getItem('login') == 'true') {
-                        firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${tercount}`).attr('navn')}/`).set(null);
-                        refresh();
-                    } else {
-                        let passordlogginn = prompt('Hva er passordet?');
-                        if (passordloggin == binaryfrom(binaryfrom(binaryfrom(pass)))) {
-                            localStorage.setItem('login', 'true');
-                            firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${tercount}`).attr('navn')}/`).set(null);
-                            refresh();
                         }
                     }
                 });
@@ -395,7 +390,131 @@ function skriv(input) {
     firebase.database().ref(`/handleliste/handleliste/${clr}-${navnet}-${Math.floor(Math.random() * Math.floor(Math.random() * Date.now()))}`).update({
         navn: navnet,
         color: `${clr}`,
+        count: 1
     });
     $('#checkbox').prop('checked', false);
     refresh();
+}
+
+function pluss(input) {
+    if (localStorage.getItem('login') == 'true') {
+        $(`#${input} .buttnen .tall`).text(eval($(`#${input} .buttnen .tall`).text()) + 1);
+        if (input >= 100000) {
+            firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${input}`).attr('navn')}`).update({
+                navn: $(`#${input}`).attr('tang'),
+                color: $(`#${input}`).attr('farg'),
+                count: $(`#${input} .buttnen .tall`).text()
+            });
+            refresh();
+        } else if (input <= 999999) {
+            firebase.database().ref(`/handleliste/handleliste/${$(`#${input}`).attr('navn')}`).update({
+                navn: $(`#${input}`).attr('tang'),
+                color: $(`#${input}`).attr('farg'),
+                count: $(`#${input} .buttnen .tall`).text()
+            });
+            refresh();
+        }
+    } else {
+        let logginn = prompt('Passord');
+        if (logginn == binaryfrom(binaryfrom(binaryfrom(pass)))) {
+            localStorage.setItem('login', 'true');
+            $(`#${input} .buttnen .tall`).text(eval($(`#${input} .buttnen .tall`).text()) + 1);
+            if (input >= 100000) {
+                firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${input}`).attr('navn')}`).update({
+                    navn: $(`#${input}`).attr('tang'),
+                    color: $(`#${input}`).attr('farg'),
+                    count: $(`#${input} .buttnen .tall`).text()
+                });
+                refresh();
+            } else if (input <= 999999) {
+                firebase.database().ref(`/handleliste/handleliste/${$(`#${input}`).attr('navn')}`).update({
+                    navn: $(`#${input}`).attr('tang'),
+                    color: $(`#${input}`).attr('farg'),
+                    count: $(`#${input} .buttnen .tall`).text()
+                });
+                refresh();
+            }
+        } else {
+            alert('Feil passord');
+        }
+    }
+}
+
+
+
+
+function minus(input) {
+    if (localStorage.getItem('login') == 'true') {
+        $(`#${input} .buttnen .tall`).text(eval($(`#${input} .buttnen .tall`).text()) - 1);
+        if (input >= 100000) {
+            if (eval($(`#${input} .buttnen .tall`).text()) == 0) {
+                let cnfrm = confirm('Vil du slette?');
+                if (cnfrm == true) {
+                    firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${input}`).attr('navn')}`).set(null);
+                    refresh();
+                }
+            } else {
+                firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${input}`).attr('navn')}`).update({
+                    navn: $(`#${input}`).attr('tang'),
+                    color: $(`#${input}`).attr('farg'),
+                    count: $(`#${input} .buttnen .tall`).text()
+                });
+                refresh();
+            }
+        } else if (input <= 999999) {
+            if (eval($(`#${input} .buttnen .tall`).text()) == 0) {
+                let cnfrm = confirm('Vil du slette?');
+                if (cnfrm == true) {
+                    firebase.database().ref(`/handleliste/handleliste/${$(`#${input}`).attr('navn')}`).set(null);
+                    refresh();
+                }
+            } else {
+                firebase.database().ref(`/handleliste/handleliste/${$(`#${input}`).attr('navn')}`).update({
+                    navn: $(`#${input}`).attr('tang'),
+                    color: $(`#${input}`).attr('farg'),
+                    count: $(`#${input} .buttnen .tall`).text()
+                });
+                refresh();
+            }
+        }
+    } else {
+        let logginn = prompt('Passord');
+        if (logginn == binaryfrom(binaryfrom(binaryfrom(pass)))) {
+            localStorage.setItem('login', 'true');
+            $(`#${input} .buttnen .tall`).text(eval($(`#${input} .buttnen .tall`).text()) - 1);
+            if (input >= 100000) {
+                if (eval($(`#${input} .buttnen .tall`).text()) == 0) {
+                    let cnfrm = confirm('Vil du slette?');
+                    if (cnfrm == true) {
+                        firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${input}`).attr('navn')}`).set(null);
+                        refresh();
+                    }
+                } else {
+                    firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${input}`).attr('navn')}`).update({
+                        navn: $(`#${input}`).attr('tang'),
+                        color: $(`#${input}`).attr('farg'),
+                        count: $(`#${input} .buttnen .tall`).text()
+                    });
+                    refresh();
+                }
+            } else if (input <= 999999) {
+                if (eval($(`#${input} .buttnen .tall`).text()) == 0) {
+                    let cnfrm = confirm('Vil du slette?');
+                    if (cnfrm == true) {
+                        firebase.database().ref(`/handleliste/handleliste/${$(`#${input}`).attr('navn')}`).set(null);
+                        refresh();
+                    }
+                } else {
+                    firebase.database().ref(`/handleliste/handleliste/${$(`#${input}`).attr('navn')}`).update({
+                        navn: $(`#${input}`).attr('tang'),
+                        color: $(`#${input}`).attr('farg'),
+                        count: $(`#${input} .buttnen .tall`).text()
+                    });
+                    refresh();
+                }
+            }
+        } else {
+            alert('Feil passord');
+        }
+    }
 }
