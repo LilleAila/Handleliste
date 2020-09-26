@@ -132,7 +132,8 @@ function refresh() {
     $('#liste2').html('');
     ider = 0;
     iderr = 100000;
-    setTimeout(function () {
+    //setTimeout(function () {
+    $.when(function () {
         firebase.database().ref(`/handleliste/handleliste/`).once('value').then(function (snapshot) {
             if (snapshot.val() != null && snapshot.val() != undefined) {
                 keys = Object.keys(snapshot.val());
@@ -144,6 +145,7 @@ function refresh() {
                 }
             }
         });
+    }).then(function () {
         firebase.database().ref(`/handleliste/handleliste-kjopt/`).orderByChild('sort').once('value').then(function (snapshot) {
             if (snapshot.val() != null && snapshot.val() != undefined) {
                 keyz = Object.keys(snapshot.val());
@@ -155,29 +157,41 @@ function refresh() {
                 }
             }
         });
-        setTimeout(function () {
-            let trclass = document.getElementsByClassName('tr');
-            let trcount = 0;
-            for (let i = 0; i < trclass.length; i++) {
-                trcount++;
-                // Hammer(document.getElementById(i)).on('swipeleft', function () {
-                //     $(`#${i} .btn`).addClass('swiped');
-                //     $(`#${i} .btn`).removeClass('clicked');
-                //     //console.log('Swiped');
-                // });
-                // Hammer(document.getElementById(i)).on('swiperight', function () {
-                //     $(`#${i} .btn`).removeClass('swiped');
-                //     $(`#${i} .btn`).addClass('clicked');
-                //     //console.log('Clicked');
-                // });
-                // $(`#${i}`).click(function () {
-                //     $(`#${i} .btn`).removeClass('swiped');
-                //     $(`#${i} .btn`).addClass('clicked');
-                //     //console.log('Clicked');
-                // });
-                $(`#${i} .tingen`).click(function () {
-                    if (localStorage.getItem('login') == 'true') {
-                        //localStorage.setItem('login', 'true');
+    }).then(function () {
+        //setTimeout(function () {
+        let trclass = document.getElementsByClassName('tr');
+        let trcount = 0;
+        for (let i = 0; i < trclass.length; i++) {
+            trcount++;
+            // Hammer(document.getElementById(i)).on('swipeleft', function () {
+            //     $(`#${i} .btn`).addClass('swiped');
+            //     $(`#${i} .btn`).removeClass('clicked');
+            //     //console.log('Swiped');
+            // });
+            // Hammer(document.getElementById(i)).on('swiperight', function () {
+            //     $(`#${i} .btn`).removeClass('swiped');
+            //     $(`#${i} .btn`).addClass('clicked');
+            //     //console.log('Clicked');
+            // });
+            // $(`#${i}`).click(function () {
+            //     $(`#${i} .btn`).removeClass('swiped');
+            //     $(`#${i} .btn`).addClass('clicked');
+            //     //console.log('Clicked');
+            // });
+            $(`#${i} .tingen`).click(function () {
+                if (localStorage.getItem('login') == 'true') {
+                    //localStorage.setItem('login', 'true');
+                    firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${i}`).attr('navn')}/`).update({
+                        navn: $(`#${i}`).attr('tang'),
+                        color: $(`#${i}`).attr('farg'),
+                        count: $(`#${i}`).attr('count')
+                    });
+                    firebase.database().ref(`/handleliste/handleliste/${$(`#${i}`).attr('navn')}/`).set(null);
+                    refresh();
+                } else {
+                    let passordlogginn = prompt('Hva er passordet?');
+                    if (passordlogginn == binaryfrom(binaryfrom(binaryfrom(pass)))) {
+                        localStorage.setItem('login', 'true');
                         firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${i}`).attr('navn')}/`).update({
                             navn: $(`#${i}`).attr('tang'),
                             color: $(`#${i}`).attr('farg'),
@@ -186,62 +200,62 @@ function refresh() {
                         firebase.database().ref(`/handleliste/handleliste/${$(`#${i}`).attr('navn')}/`).set(null);
                         refresh();
                     } else {
-                        let passordlogginn = prompt('Hva er passordet?');
-                        if (passordlogginn == binaryfrom(binaryfrom(binaryfrom(pass)))) {
-                            localStorage.setItem('login', 'true');
-                            firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${i}`).attr('navn')}/`).update({
-                                navn: $(`#${i}`).attr('tang'),
-                                color: $(`#${i}`).attr('farg'),
-                                count: $(`#${i}`).attr('count')
-                            });
-                            firebase.database().ref(`/handleliste/handleliste/${$(`#${i}`).attr('navn')}/`).set(null);
-                            refresh();
-                        } else {
-                            alert('Feil passord');
-                        }
+                        alert('Feil passord');
                     }
-                });
-                $(`#${i} .buttn`).click(function () {
-                    if (localStorage.getItem('login') == 'true') {
+                }
+            });
+            $(`#${i} .buttn`).click(function () {
+                if (localStorage.getItem('login') == 'true') {
+                    firebase.database().ref(`/handleliste/handleliste/${$(`#${i}`).attr('navn')}/`).set(null);
+                    refresh();
+                } else {
+                    let passordlogginn = prompt('Hva er passordet?');
+                    if (passordloggin == binaryfrom(binaryfrom(binaryfrom(pass)))) {
+                        localStorage.setItem('login', 'true');
                         firebase.database().ref(`/handleliste/handleliste/${$(`#${i}`).attr('navn')}/`).set(null);
                         refresh();
-                    } else {
-                        let passordlogginn = prompt('Hva er passordet?');
-                        if (passordloggin == binaryfrom(binaryfrom(binaryfrom(pass)))) {
-                            localStorage.setItem('login', 'true');
-                            firebase.database().ref(`/handleliste/handleliste/${$(`#${i}`).attr('navn')}/`).set(null);
-                            refresh();
-                        }
                     }
-                });
-            }
-            //console.log(`Det er ${trcount} ting med klassen tr.`);
+                }
+            });
+        }
+        //console.log(`Det er ${trcount} ting med klassen tr.`);
 
 
 
-            let terclass = document.getElementsByClassName('ter');
-            let tercount = 99999;
-            for (let i = 0; i < terclass.length; i++) {
-                tercount++;
-                // Hammer(document.getElementById(tercount)).on('swipeleft', function () {
-                //     $(`#${tercount} .btn`).addClass('swiped');
-                //     $(`#${tercount} .btn`).removeClass('clicked');
-                //     //console.log('Swiped');
-                // });
-                // Hammer(document.getElementById(tercount)).on('swiperight', function () {
-                //     $(`#${tercount} .btn`).removeClass('swiped');
-                //     $(`#${tercount} .btn`).addClass('clicked');
-                //     //console.log('Clicked');
-                // });
-                // $(`#${tercount}`).click(function () {
-                //     $(`#${tercount} .btn`).removeClass('swiped');
-                //     $(`#${tercount} .btn`).addClass('clicked');
-                //     //console.log('Clicked');
-                // });
-                $(`#${tercount} .tingen`).click(function () {
-                    if (localStorage.getItem('login') == 'true') {
-                        //console.log($(`#${i}`).attr('ting'));
-                        //localStorage.setItem('login', 'true');
+        let terclass = document.getElementsByClassName('ter');
+        let tercount = 99999;
+        for (let i = 0; i < terclass.length; i++) {
+            tercount++;
+            // Hammer(document.getElementById(tercount)).on('swipeleft', function () {
+            //     $(`#${tercount} .btn`).addClass('swiped');
+            //     $(`#${tercount} .btn`).removeClass('clicked');
+            //     //console.log('Swiped');
+            // });
+            // Hammer(document.getElementById(tercount)).on('swiperight', function () {
+            //     $(`#${tercount} .btn`).removeClass('swiped');
+            //     $(`#${tercount} .btn`).addClass('clicked');
+            //     //console.log('Clicked');
+            // });
+            // $(`#${tercount}`).click(function () {
+            //     $(`#${tercount} .btn`).removeClass('swiped');
+            //     $(`#${tercount} .btn`).addClass('clicked');
+            //     //console.log('Clicked');
+            // });
+            $(`#${tercount} .tingen`).click(function () {
+                if (localStorage.getItem('login') == 'true') {
+                    //console.log($(`#${i}`).attr('ting'));
+                    //localStorage.setItem('login', 'true');
+                    firebase.database().ref(`/handleliste/handleliste/${$(`#${tercount}`).attr('navn')}/`).update({
+                        navn: $(`#${tercount}`).attr('tang'),
+                        color: $(`#${tercount}`).attr('farg'),
+                        count: $(`#${tercount}`).attr('count')
+                    });
+                    firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${tercount}`).attr('navn')}/`).set(null);
+                    refresh();
+                } else {
+                    let passordlogginn = prompt('Hva er passordet?');
+                    if (passordlogginn == binaryfrom(binaryfrom(binaryfrom(pass)))) {
+                        localStorage.setItem('login', 'true');
                         firebase.database().ref(`/handleliste/handleliste/${$(`#${tercount}`).attr('navn')}/`).update({
                             navn: $(`#${tercount}`).attr('tang'),
                             color: $(`#${tercount}`).attr('farg'),
@@ -250,25 +264,15 @@ function refresh() {
                         firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${tercount}`).attr('navn')}/`).set(null);
                         refresh();
                     } else {
-                        let passordlogginn = prompt('Hva er passordet?');
-                        if (passordlogginn == binaryfrom(binaryfrom(binaryfrom(pass)))) {
-                            localStorage.setItem('login', 'true');
-                            firebase.database().ref(`/handleliste/handleliste/${$(`#${tercount}`).attr('navn')}/`).update({
-                                navn: $(`#${tercount}`).attr('tang'),
-                                color: $(`#${tercount}`).attr('farg'),
-                                count: $(`#${tercount}`).attr('count')
-                            });
-                            firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${tercount}`).attr('navn')}/`).set(null);
-                            refresh();
-                        } else {
-                            alert('Feil passord');
-                        }
+                        alert('Feil passord');
                     }
-                });
-            }
-            //console.log(`Det er ${tercount - 100000} ting med klassen ter.`);
-        }, 1500);
-    }, 10)
+                }
+            });
+        }
+        //console.log(`Det er ${tercount - 100000} ting med klassen ter.`);
+    });
+    //}, 1500);
+    //}, 10)
 }
 // var listen = document.getElementById('listen')
 // new SwipeOut(listen, { btnText: "Slett" });
