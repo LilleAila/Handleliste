@@ -6,8 +6,19 @@ var iddd = 0;
 var keys, keyz;
 var data, data1, data2, data3;
 var clr;
+const runFuncs = (funcArr) => {
+    for (let o of funcArr) {
+        //console.log(o);
+        o();
+    }
+}
+// runFuncs([() => console.log('En'), () => console.log('To'), () => console.log('Tre'), () => {
+//     setTimeout(() => {
+//         console.log('Fire')
+//     }, 1000)
+// }, () => console.log('Fem')])
 
-function binaryto(input) {
+const binaryto = (input) => {
     let inputt = input.split('');
     //console.log( inputt );
     let output = [];
@@ -17,16 +28,16 @@ function binaryto(input) {
     return output.join(' ');
 }
 
-function binaryfrom(input) {
+const binaryfrom = (input) => {
     let output = input.split(' ').map(bin => String.fromCharCode(parseInt(bin, 2))).join('');
     return output;
 }
 
-function cofl(string) {
+const cofl = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function cfl(str) {
+const cfl = (str) => {
     const arrOfWords = str.split(" ");
     const arrOfWordsCased = [];
 
@@ -38,8 +49,8 @@ function cfl(str) {
     return arrOfWordsCased.join(" ");
 }
 
-function les(input) {
-    firebase.database().ref(`/handleliste/handleliste/${input.navn}`).once('value').then(function (snapshot) {
+const les = (input) => {
+    firebase.database().ref(`/handleliste/handleliste/${input.navn}`).once('value').then((snapshot) => {
         $('#liste').append(`
         <li id="${ider}" navn="${input.navn}" class="tr" style="border-left: 5px solid #${snapshot.val().color};" farg="${snapshot.val().color}" tang="${cofl(snapshot.val().navn.toLowerCase())}" count="${snapshot.val().count}">
             <div class="tingen" style="width: 90%;height: 100%;">${cofl(snapshot.val().navn.toLowerCase())}</div>
@@ -55,8 +66,8 @@ function les(input) {
     });
 }
 
-function les2(input) {
-    firebase.database().ref(`/handleliste/handleliste-kjopt/${input.navn}`).once('value').then(function (snapshot) {
+const les2 = (input) => {
+    firebase.database().ref(`/handleliste/handleliste-kjopt/${input.navn}`).once('value').then((snapshot) => {
         $('#liste2').append(`
         <li id="${iderr}" navn="${input.navn}" class="ter" style="border-left: 5px solid #${snapshot.val().color};" farg="${snapshot.val().color}" tang="${cofl(snapshot.val().navn.toLowerCase())}" count="${snapshot.val().count}">
             <div class="tingen" style="width: 90%;height: 100%;">${cofl(snapshot.val().navn.toLowerCase())}</div>
@@ -72,7 +83,7 @@ function les2(input) {
     });
 }
 
-// $('.buttn').click(function () {
+// $('.buttn').click(() => {
 //     if ($(this).attr('typ') == 'en') {
 //         firebase.database().ref(`/handleliste/handleliste/${$(this).attr('navn')}/`).set(null);
 //     } else if ($(this).attr('typ') == 'to') {
@@ -84,26 +95,26 @@ function les2(input) {
 //     refresh();
 // });
 
-// $('document').ready(function () {
-//     $('li').each(function () {
+// $('document').ready(() => {
+//     $('li').each(() => {
 //         $(this).attr('text', $(this).text());
 //         iddd++;
 //     });
 //     //console.log(`Satte attr text på ${iddd} ting`);
 //     refresh();
 //     // new SwipeOut(list, { btnText: "Slett" });
-//     // $('#liste li').on("delete", function(evt) {
+//     // $('#liste li').on("delete", (evt) => {
 //     //     firebase.database().ref(`/handleliste/handleliste/${$(this).attr('navn')}/`).set(null);
 //     //     refresh();
 //     // });
 // });
 
-// $('#delete').click(function () {
+// $('#delete').click(() => {
 //     let passordlogginn = prompt('Hva er passordet?');
 //     if (passordlogginn == binaryfrom(binaryfrom(binaryfrom(pass)))) {
 //         let delet = confirm('Er du sikker på at du vil slette?');
 //         if (delet == true || delet) {
-//             $.each($('.check:checked'), function (index) {
+//             $.each($('.check:checked'), (index) => {
 //                 //console.log($(this).attr('del'));
 //                 firebase.database().ref(`/handleliste/handleliste/${$(this).attr('del')}/`).set(null);
 //             });
@@ -117,7 +128,7 @@ function les2(input) {
 //     }
 // });
 
-// $('.tr').onSwipe(function(results) {
+// $('.tr').onSwipe((results) => {
 //     if (results.left == true) {
 //         //console.log('Left');
 //     } else if (results.right == true) {
@@ -127,58 +138,64 @@ function les2(input) {
 //     }
 // })
 
-function refresh() {
+const refresh = () => {
     $('#liste').html('');
     $('#liste2').html('');
     ider = 0;
     iderr = 100000;
-    //setTimeout(function () {
-    $.when(function () {
-        firebase.database().ref(`/handleliste/handleliste/`).once('value').then(function (snapshot) {
+    //setTimeout(() => {
+    $.when().then(() => {
+        firebase.database().ref(`/handleliste/handleliste/`).once('value').then((snapshot) => {
             if (snapshot.val() != null && snapshot.val() != undefined) {
                 keys = Object.keys(snapshot.val());
+                let nokler1 = keys.join('\n');
+                //console.log(snapshot.val());
+                console.log(`Handleliste nøkler:\n\n${nokler1}\n\nData:`);
                 console.log(snapshot.val());
-                for (var i = 0; i < keys.length; i++) {
+                for (let i = 0; i < keys.length; i++) {
                     les({
                         navn: keys[i]
                     });
                 }
             }
         });
-    }).then(function () {
-        firebase.database().ref(`/handleliste/handleliste-kjopt/`).orderByChild('sort').once('value').then(function (snapshot) {
+    }).then(() => {
+        firebase.database().ref(`/handleliste/handleliste-kjopt/`).once('value').then((snapshot) => {
             if (snapshot.val() != null && snapshot.val() != undefined) {
-                keyz = Object.keys(snapshot.val());
-                console.log(snapshot.val())
-                for (var i = 0; i < keyz.length; i++) {
+                keyz = Object.keys(snapshot.val())
+                let nokler2 = keyz.join('\n')
+                //console.log(snapshot.val())
+                console.log(`Kjøpt nøkler:\n\n${nokler2}\n\nData:`);
+                console.log(snapshot.val());
+                for (let i = 0; i < keyz.length; i++) {
                     les2({
                         navn: keyz[i]
                     });
                 }
             }
         });
-    }).then(function () {
-        //setTimeout(function () {
+    }).then(() => {
+        //setTimeout(() => {
         let trclass = document.getElementsByClassName('tr');
         let trcount = 0;
         for (let i = 0; i < trclass.length; i++) {
             trcount++;
-            // Hammer(document.getElementById(i)).on('swipeleft', function () {
+            // Hammer(document.getElementById(i)).on('swipeleft',() => {
             //     $(`#${i} .btn`).addClass('swiped');
             //     $(`#${i} .btn`).removeClass('clicked');
             //     //console.log('Swiped');
             // });
-            // Hammer(document.getElementById(i)).on('swiperight', function () {
+            // Hammer(document.getElementById(i)).on('swiperight', () => {
             //     $(`#${i} .btn`).removeClass('swiped');
             //     $(`#${i} .btn`).addClass('clicked');
             //     //console.log('Clicked');
             // });
-            // $(`#${i}`).click(function () {
+            // $(`#${i}`).click(() => {
             //     $(`#${i} .btn`).removeClass('swiped');
             //     $(`#${i} .btn`).addClass('clicked');
             //     //console.log('Clicked');
             // });
-            $(`#${i} .tingen`).click(function () {
+            $(`#${i} .tingen`).click(() => {
                 if (localStorage.getItem('login') == 'true') {
                     //localStorage.setItem('login', 'true');
                     firebase.database().ref(`/handleliste/handleliste-kjopt/${$(`#${i}`).attr('navn')}/`).update({
@@ -204,7 +221,7 @@ function refresh() {
                     }
                 }
             });
-            $(`#${i} .buttn`).click(function () {
+            $(`#${i} .buttn`).click(() => {
                 if (localStorage.getItem('login') == 'true') {
                     firebase.database().ref(`/handleliste/handleliste/${$(`#${i}`).attr('navn')}/`).set(null);
                     refresh();
@@ -226,22 +243,22 @@ function refresh() {
         let tercount = 99999;
         for (let i = 0; i < terclass.length; i++) {
             tercount++;
-            // Hammer(document.getElementById(tercount)).on('swipeleft', function () {
+            // Hammer(document.getElementById(tercount)).on('swipeleft', () => {
             //     $(`#${tercount} .btn`).addClass('swiped');
             //     $(`#${tercount} .btn`).removeClass('clicked');
             //     //console.log('Swiped');
             // });
-            // Hammer(document.getElementById(tercount)).on('swiperight', function () {
+            // Hammer(document.getElementById(tercount)).on('swiperight', () => {
             //     $(`#${tercount} .btn`).removeClass('swiped');
             //     $(`#${tercount} .btn`).addClass('clicked');
             //     //console.log('Clicked');
             // });
-            // $(`#${tercount}`).click(function () {
+            // $(`#${tercount}`).click(() => {
             //     $(`#${tercount} .btn`).removeClass('swiped');
             //     $(`#${tercount} .btn`).addClass('clicked');
             //     //console.log('Clicked');
             // });
-            $(`#${tercount} .tingen`).click(function () {
+            $(`#${tercount} .tingen`).click(() => {
                 if (localStorage.getItem('login') == 'true') {
                     //console.log($(`#${i}`).attr('ting'));
                     //localStorage.setItem('login', 'true');
@@ -276,11 +293,11 @@ function refresh() {
 }
 // var listen = document.getElementById('listen')
 // new SwipeOut(listen, { btnText: "Slett" });
-// $('#listen li').on("delete", function(evt) {
+// $('#listen li').on("delete", (evt) => {
 //     //console.log($(this).attr('text'));
 // });
 
-/*firebase.database().ref(`/handleliste/handleliste/`).on('value', function(snapshot) {
+/*firebase.database().ref(`/handleliste/handleliste/`).on('value', (snapshot) => {
     if (Object.keys(snapshot.val()).length != keys) {
         //console.log(snapshot.val());
         refresh();
@@ -290,17 +307,17 @@ function refresh() {
     //console.log('hei');
 })*/
 
-setInterval(function () {
+setInterval(() => {
     refresh();
     console.log('Laster på nytt')
 }, 60000);
 
 
-$('document').ready(function () {
+$('document').ready(() => {
     refresh();
 });
 
-$('#navnpating').on('input', function () {
+$('#navnpating').on('input', () => {
     if ($(this).val().length != 0 && $(this).val() != '' && $(this).val() != ' ' && $(this).val() != null && $(this).val() != undefined) {
         //console.log('changed and more than 0 characters!');
         bringUpColorSelect();
@@ -309,15 +326,15 @@ $('#navnpating').on('input', function () {
     }
 })
 
-function bringUpColorSelect() {
+const bringUpColorSelect = () => {
     $('#colorselect').css('display', 'flex');
 }
 
-function takeDownColorSelect() {
+const takeDownColorSelect = () => {
     $('#colorselect').css('display', 'none');
 }
 
-// $('#label').click(function () {
+// $('#label').click(() {
 //     if (localStorage.getItem('login') == 'true') {
 //         skrive();
 //     } else {
@@ -333,35 +350,35 @@ function takeDownColorSelect() {
 //     }
 // });
 
-$('.en').click(function () {
+$('.en').click(() => {
     skrive('#f6bd60');
 });
-$('.to').click(function () {
+$('.to').click(() => {
     skrive('#fb4d3d');
 });
-$('.tre').click(function () {
+$('.tre').click(() => {
     skrive('#6874e8');
 });
-$('.fire').click(function () {
+$('.fire').click(() => {
     skrive('#84a59d');
 });
-$('.fem').click(function () {
+$('.fem').click(() => {
     skrive('#f28482');
 });
-$('.seks').click(function () {
+$('.seks').click(() => {
     skrive('#84e296');
 });
-$('.syv').click(function () {
+$('.syv').click(() => {
     skrive('#0d5d56');
 });
-$('.atte').click(function () {
+$('.atte').click(() => {
     skrive('#258ea6');
 });
-$('.ni').click(function () {
+$('.ni').click(() => {
     skrive('#41393e');
 });
 
-function skrive(colr) {
+const skrive = (colr) => {
     if (localStorage.getItem('login') == 'true') {
         skriv({
             navn: $('#navnpating').val(),
@@ -385,7 +402,7 @@ function skrive(colr) {
     }
 }
 
-function skriv(input) {
+const skriv = (input) => {
     clr = input.color.slice(1);
     let navnet = sanitizeHtml(input.navn, {
         allowedTags: [],
@@ -400,7 +417,7 @@ function skriv(input) {
     refresh();
 }
 
-function pluss(input) {
+const pluss = (input) => {
     if (localStorage.getItem('login') == 'true') {
         $(`#${input} .buttnen .tall`).text(eval($(`#${input} .buttnen .tall`).text()) + 1);
         if (input >= 100000) {
@@ -447,7 +464,7 @@ function pluss(input) {
 
 
 
-function minus(input) {
+const minus = (input) => {
     if (localStorage.getItem('login') == 'true') {
         $(`#${input} .buttnen .tall`).text(eval($(`#${input} .buttnen .tall`).text()) - 1);
         if (input >= 100000) {
