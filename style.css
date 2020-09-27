@@ -574,6 +574,11 @@ hr {
     right: 0;
     background-color: rgba(0, 0, 0, 0.25);
     /* border: 1px dashed black; */
+    transition: box-shadow 1s ease-out, background-color 1s ease;
+}
+
+#navlabel:hover {
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 #nav:checked+#navlabel .nav-icon:before {
@@ -594,6 +599,11 @@ hr {
 #nav:checked+#navlabel {
     /* right: 50vw; */
     animation: fromRight 1s ease forwards;
+    box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.5);
+}
+
+#nav:checked+#navlabel:hover {
+    box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.75);
 }
 
 #nav:not(:checked)+#navlabel {
@@ -604,24 +614,29 @@ hr {
 @keyframes fromRight {
     from {
         right: 0;
+        top: 10vh;
     }
 
     to {
-        right: 50vw;
+        right: 55vw;
+        top: 15vh;
     }
 }
 
 @keyframes fromLeft {
     from {
-        right: 50vw;
+        right: 55vw;
+        top: 15vh;
     }
 
     50% {
         right: 50vw;
+        top: 10vh;
     }
 
     to {
         right: 0;
+        top: 10vh;
     }
 }
 
@@ -640,6 +655,7 @@ hr {
     place-items: center;
     overflow-y: scroll;
     pointer-events: none;
+    box-shadow: -2px 0px 5px 2px black;
 }
 
 #navcontent .listeknapp {
@@ -649,10 +665,10 @@ hr {
     place-items: center;
     transition: background-color 0.5s ease-out;
     cursor: pointer;
-    min-height: 10vh;
+    height: 100%;
     margin: 0;
-    margin-top: 2.25vh;
-    margin-bottom: 2.25vh
+    /* margin-top: 2.25vh;
+    margin-bottom: 2.25vh */
 }
 
 #navcontent .listeknapp:hover {
@@ -662,44 +678,46 @@ hr {
 #nav:not(:checked)+#navlabel+#navcontent {
     /* display: none; */
     animation: displaynone 2s ease forwards;
+    pointer-events: none;
 }
 
 #nav:checked+#navlabel+#navcontent {
     /* display: block; */
     animation: display 2s ease forwards;
+    pointer-events: initial;
 }
 
 @keyframes displaynone {
     from {
         opacity: 1;
-        pointer-events: initial;
+        /* pointer-events: initial; */
     }
 
     50% {
         opacity: 0;
-        pointer-events: none;
+        /* pointer-events: none; */
     }
 
     to {
         opacity: 0;
-        pointer-events: none;
+        /* pointer-events: none; */
     }
 }
 
 @keyframes display {
     from {
         opacity: 0;
-        pointer-events: none;
+        /* pointer-events: none; */
     }
 
     50% {
         opacity: 0;
-        pointer-events: none;
+        /* pointer-events: none; */
     }
 
     to {
         opacity: 1;
-        pointer-events: initial;
+        /* pointer-events: initial; */
     }
 }
 
@@ -715,6 +733,7 @@ hr {
     position: fixed;
     top: 0;
     left: 0;
+    box-shadow: 0px 2px 5px 2px rgba(0, 0, 0, 1);
 }
 
 .plusss input {
@@ -737,6 +756,7 @@ hr {
     transition: background-color 0.5s ease-out;
     font-weight: bolder;
     font-size: 9vh;
+    cursor: pointer;
 }
 
 .plusss span:hover {
@@ -750,8 +770,35 @@ hr {
     left: 1vw;
     bottom: 1vh;
     z-index: 109;
+    filter: drop-shadow(5px 5px 5px black);
+    transition: color 1s ease, filter 1s ease;
 }
 
 #slettknapp:hover {
     color: #FF0000;
+    filter: drop-shadow(5px 5px 5px red);
+}
+
+.blur {
+    -webkit-filter: blur(5px);
+    -moz-filter: blur(5px);
+    -o-filter: blur(5px);
+    -ms-filter: blur(5px);
+    filter: blur(5px);
+    user-select: none;
+    pointer-events: none;
+    cursor: default;
+}
+
+#app {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    transition: filter 2s ease;
+    -webkit-transition: filter 2s ease;
+    -moz-transition: filter 2s ease;
+    -o-transition: filter 2s ease;
+    -ms-transition: filter 2s ease;
 }

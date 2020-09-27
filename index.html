@@ -24,7 +24,7 @@
 
 <body id="Body">
     <input type="checkbox" class="nav" name="nav" id="nav">
-    <label for="nav" id="navlabel">
+    <label for="nav" id="navlabel" onclick="$('#app').toggleClass('blur')">
         <div class="nav-icon">
             <div></div>
         </div>
@@ -36,30 +36,32 @@
         </div>
         <button id="slettknapp" class="fas fa-trash fa-5x"></button>
     </div>
-    <input id="navnpating" placeholder="Legg til en ting" onclick="hideOpenNav()">
-    <hr id="navnpatinghr" />
-    <div id="colorselect">
-        <div class="row row1">
-            <div class="column en"></div>
-            <div class="column to"></div>
-            <div class="column tre"></div>
+    <div id="app">
+        <input id="navnpating" placeholder="Legg til en ting" onclick="hideOpenNav()">
+        <hr id="navnpatinghr" />
+        <div id="colorselect">
+            <div class="row row1">
+                <div class="column en"></div>
+                <div class="column to"></div>
+                <div class="column tre"></div>
+            </div>
+            <div class="row row2">
+                <div class="column fire"></div>
+                <div class="column fem"></div>
+                <div class="column seks"></div>
+            </div>
+            <div class="row row3">
+                <div class="column syv"></div>
+                <div class="column atte"></div>
+                <div class="column ni"></div>
+            </div>
         </div>
-        <div class="row row2">
-            <div class="column fire"></div>
-            <div class="column fem"></div>
-            <div class="column seks"></div>
-        </div>
-        <div class="row row3">
-            <div class="column syv"></div>
-            <div class="column atte"></div>
-            <div class="column ni"></div>
-        </div>
+        <h1 id="ikkekjopt">Handleliste</h1>
+        <ul id="liste"></ul>
+        <hr />
+        <h1 id="kjopt">Kjøpt</h1>
+        <ul id="liste2"></ul>
     </div>
-    <h1 id="ikkekjopt">Handleliste</h1>
-    <ul id="liste"></ul>
-    <hr />
-    <h1 id="kjopt">Kjøpt</h1>
-    <ul id="liste2"></ul>
 
     <!-- The core Firebase JS SDK is always required and must be listed first -->
     <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>

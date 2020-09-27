@@ -52,7 +52,7 @@ const lagliste = (val) => {
         navn: 'Ny Liste',
         count: 1
     });
-    $.when().then(() => $('#nav').prop('checked', false)).then(() => setTimeout(() => refresh(), 2100));
+    $.when().then(() => $('#nav').prop('checked', false)).then(() => $('#app').removeClass('blur')).then(() => setTimeout(() => refresh(), 2100));
 }
 const openliste = (listenavn) => {
     database = listenavn;
@@ -89,7 +89,10 @@ const sletthandleliste = () => {
         }
     }
 }
-const hideOpenNav = () => $('#nav').prop('checked', false)
+const hideOpenNav = () => {
+    $('#nav').prop('checked', false);
+    $('#app').removeClass('blur')
+}
 const runFuncs = (funcArr) => {
     for (let o of funcArr) {
         o();
@@ -191,7 +194,7 @@ function refresh() {
             for (let i of nokler) {
                 if (i.slice(-5) != 'kjopt') {
                     $('#navcontent').append(`
-                    <div class="listeknapp" onclick="openliste('${i}')">${i}</div>
+                    <div class="listeknapp" onclick="openliste('${i}')">${cofl(i.toLowerCase())}</div>
                     `);
                 }
             }
@@ -320,6 +323,7 @@ function skriv(input) {
         count: 1
     });
     $('#checkbox').prop('checked', false);
+    $('#app').removeClass('blur');
     refresh();
 }
 
